@@ -1,6 +1,5 @@
 /vendor/
 .claude/settings.local.json
-config/smtp.php
 .env
 *.log
 .DS_Store

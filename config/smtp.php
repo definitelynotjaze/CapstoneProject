@@ -1,4 +1,4 @@
-<?php
+git commit -m "Add SMTP config"<?php
 // ================================================================
 //  OPTICANA — config/smtp.php
 //  SMTP credentials for outgoing email (PHPMailer).
