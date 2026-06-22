@@ -63,7 +63,6 @@ function apptActions(a, role) {
 function appointmentsTable(list, role, tbodyId = 'appt-tbody') {
   if (!list.length) return `<div class="table-empty">No appointments found.</div>`
   return `
-    <div style="overflow-x:auto">
     <table class="tbl">
       <colgroup>
         <col style="width:6%"><col style="width:18%"><col style="width:18%">
@@ -71,12 +70,15 @@ function appointmentsTable(list, role, tbodyId = 'appt-tbody') {
         <col style="width:20%">
       </colgroup>
       <thead><tr>
-        <th>ID</th><th>Patient</th><th>Doctor</th>
-        <th>Date</th><th>Time</th><th>Type</th>
+        <th>ID</th>
+        <th data-sort-key="patient" data-sort-type="text">Patient</th>
+        <th>Doctor</th>
+        <th data-sort-key="date" data-sort-type="date">Date</th>
+        <th>Time</th><th>Type</th>
         ${role !== 'patient' ? '<th>Actions</th>' : ''}
       </tr></thead>
       <tbody id="${tbodyId}">
-        ${list.map(a => `<tr data-search="${(a.patientName||'').toLowerCase()} ${String(a.patientId||'').toLowerCase()} ${(a.doctorName||'').toLowerCase()} ${(a.type||'').toLowerCase()}" data-appt-status="${a.status}">
+        ${list.map(a => `<tr data-search="${(a.patientName||'').toLowerCase()} ${String(a.patientId||'').toLowerCase()} ${(a.doctorName||'').toLowerCase()} ${(a.type||'').toLowerCase()}" data-appt-status="${a.status}" data-sort-patient="${(a.patientName||'').toLowerCase()}" data-sort-date="${a.date}">
           <td><code style="font-size:.75rem;color:#9CA3AF">${a.id}</code></td>
           <td><div class="patient-name-cell">
             ${avatar(a.patientName, 'patient-avatar', patients.find(p=>p.id===a.patientId)?.photoUrl || null)}
@@ -89,7 +91,7 @@ function appointmentsTable(list, role, tbodyId = 'appt-tbody') {
           ${role !== 'patient' ? `<td>${apptActions(a, role)}</td>` : ''}
         </tr>`).join('')}
       </tbody>
-    </table></div>`
+    </table>`
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -344,7 +346,7 @@ function pageAdminUsers() {
 
   const filtered = filter === 'all' ? allUsers : allUsers.filter(u => u.role.toLowerCase() === filter)
 
-  window.state.afterRender = () => window.initPagination('users-tbody')
+  window.state.afterRender = () => { window.initPagination('users-tbody'); window.initSortable('users-tbody') }
   const tabs = ['all','admin','staff','doctor','patient']
 
   return `
@@ -379,17 +381,17 @@ function pageAdminUsers() {
           </div>
         </div>
       </div>
-      <div style="overflow-x:auto">
       <table class="tbl">
         <colgroup>
           <col style="width:22%"><col style="width:26%"><col style="width:14%">
           <col style="width:12%"><col style="width:10%"><col style="width:16%">
         </colgroup>
         <thead><tr>
-          <th>Name</th><th>Email</th><th>Contact</th><th>Role</th><th>Status</th><th>Actions</th>
+          <th data-sort-key="name" data-sort-type="text">Name</th>
+          <th>Email</th><th>Contact</th><th>Role</th><th>Status</th><th>Actions</th>
         </tr></thead>
         <tbody id="users-tbody">
-          ${filtered.map(u => `<tr data-search="${(u.name||'').toLowerCase()} ${(u.email||'').toLowerCase()}">
+          ${filtered.map(u => `<tr data-search="${(u.name||'').toLowerCase()} ${(u.email||'').toLowerCase()}" data-sort-name="${(u.name||'').toLowerCase()}">
             <td><div class="patient-name-cell">
               ${avatar(u.name, 'patient-avatar', u.photoUrl || null)}
               <div class="patient-name-info"><strong>${u.name}</strong><span>${u.id}</span></div>
@@ -405,7 +407,6 @@ function pageAdminUsers() {
           </tr>`).join('')}
         </tbody>
       </table>
-      </div>
     </div>
   </div>`
 }
@@ -451,7 +452,7 @@ function pageAppointments() {
   const title    = role === 'doctor' ? 'My Patient Appointments' : (titleMap[activeFilter] || 'Appointments')
   const subtitle = role === 'doctor' ? 'Appointments assigned to you' : (subtitleMap[activeFilter] || 'Manage and track appointment requests')
 
-  window.state.afterRender = () => window.initPagination('appt-tbody')
+  window.state.afterRender = () => { window.initPagination('appt-tbody'); window.initSortable('appt-tbody') }
 
   return `
   <div class="page-header">
@@ -483,14 +484,15 @@ function pageAppointments() {
 // ════════════════════════════════════════════════════════════════
 function pagePatientList() {
   const { role, filter } = st()
-  const canEdit   = role === 'admin' || role === 'staff'
+  const canEdit    = role === 'admin' || role === 'staff'
+  const canArchive = role === 'admin'
   const statusFilter = (filter && ['active','inactive'].includes(filter)) ? filter : 'all'
 
   let list = [...patients]
   if (statusFilter === 'active')   list = list.filter(p => (p.status || 'active') === 'active')
   if (statusFilter === 'inactive') list = list.filter(p => (p.status || 'active') === 'inactive')
 
-  window.state.afterRender = () => window.initPagination('patients-tbody')
+  window.state.afterRender = () => { window.initPagination('patients-tbody'); window.initSortable('patients-tbody') }
 
   return `
   <div class="page-header">
@@ -523,17 +525,19 @@ function pagePatientList() {
           </div>
         </div>
       </div>
-      <div style="overflow-x:auto">
       <table class="tbl">
         <colgroup>
           <col style="width:22%"><col style="width:7%"><col style="width:9%">
           <col style="width:14%"><col style="width:14%"><col style="width:10%"><col style="width:24%">
         </colgroup>
         <thead><tr>
-          <th>Patient</th><th>Age</th><th>Gender</th><th>Contact</th><th>Last Visit</th><th>Status</th><th>Actions</th>
+          <th data-sort-key="name" data-sort-type="text">Patient</th>
+          <th>Age</th><th>Gender</th><th>Contact</th>
+          <th data-sort-key="visit" data-sort-type="date">Last Visit</th>
+          <th>Status</th><th>Actions</th>
         </tr></thead>
         <tbody id="patients-tbody">
-          ${list.map(p => `<tr data-search="${(p.name||'').toLowerCase()} ${String(p.id||'').toLowerCase()} ${(p.contact||'').toLowerCase()}">
+          ${list.map(p => `<tr data-search="${(p.name||'').toLowerCase()} ${String(p.id||'').toLowerCase()} ${(p.contact||'').toLowerCase()}" data-sort-name="${(p.name||'').toLowerCase()}" data-sort-visit="${p.lastVisit && p.lastVisit !== '—' ? p.lastVisit : ''}">
             <td><div class="patient-name-cell">
               ${avatar(p.name, 'patient-avatar', p.photoUrl || null)}
               <div class="patient-name-info"><strong>${p.name}</strong><span>${p.id}</span></div>
@@ -551,7 +555,8 @@ function pagePatientList() {
               ${canEdit ? `
               <button class="btn-icon" title="Edit Patient" onclick="window.openEditPatientModal('${p.id}')">
                 ${ic('edit','icon-sm')}
-              </button>
+              </button>` : ''}
+              ${canArchive ? `
               <button class="btn-icon" title="Archive Patient" style="color:#d97706;border-color:#fef3c7"
                       onclick="window.confirmArchivePatient('${p.id}')">
                 ${ic('archive','icon-sm')}
@@ -560,7 +565,6 @@ function pagePatientList() {
           </tr>`).join('')}
         </tbody>
       </table>
-      </div>
     </div>
   </div>`
 }
@@ -577,21 +581,32 @@ function pagePatientView() {
   const canEdit      = role === 'admin' || role === 'staff'
   const pStatus      = p.status || 'active'
 
+  window.state.afterRender = () => {
+    ['pv-consult-tbody', 'pv-rx-tbody', 'pv-appt-tbody'].forEach(id => {
+      window.initPagination(id)
+      window.initSortable(id)
+    })
+  }
+
   // ── Tab panel helper ─────────────────────────────────────────
   const panel = (id, content, active = false) =>
     `<div id="ptab-${id}" class="ptab-panel" style="${active ? '' : 'display:none'}">${content}</div>`
 
   // ── Consultation History panel ───────────────────────────────
   const consultationsPanel = p.consultations.length ? `
-    <div style="overflow-x:auto">
+    <div class="table-wrap" style="box-shadow:none;border:1px solid #f3f4f6">
     <table class="tbl">
       <colgroup>
         <col style="width:12%"><col style="width:16%"><col style="width:12%">
         <col style="width:18%"><col style="width:24%"><col style="width:18%">
       </colgroup>
-      <thead><tr><th>Date</th><th>Doctor</th><th>Type</th><th>Diagnosis</th><th>Prescription</th><th>Remarks</th></tr></thead>
-      <tbody>
-        ${p.consultations.map(c => `<tr>
+      <thead><tr>
+        <th data-sort-key="date" data-sort-type="date">Date</th>
+        <th data-sort-key="doctor" data-sort-type="text">Doctor</th>
+        <th>Type</th><th>Diagnosis</th><th>Prescription</th><th>Remarks</th>
+      </tr></thead>
+      <tbody id="pv-consult-tbody">
+        ${p.consultations.map(c => `<tr data-search="${(c.doctor||'').toLowerCase()} ${(c.diagnosis||'').toLowerCase()} ${(c.type||'').toLowerCase()}" data-sort-date="${c.date}" data-sort-doctor="${(c.doctor||'').toLowerCase()}">
           <td style="font-size:.78rem;white-space:nowrap">${fmtDate(c.date)}</td>
           <td style="font-size:.78rem">${c.doctor}</td>
           <td style="font-size:.78rem">${c.type}</td>
@@ -605,15 +620,19 @@ function pagePatientView() {
   // ── Prescriptions panel ──────────────────────────────────────
   const rxList = p.prescriptions || []
   const prescriptionsPanel = rxList.length ? `
-    <div style="overflow-x:auto">
+    <div class="table-wrap" style="box-shadow:none;border:1px solid #f3f4f6">
     <table class="tbl">
       <colgroup>
         <col style="width:10%"><col style="width:14%"><col style="width:12%">
         <col style="width:12%"><col style="width:14%"><col style="width:30%"><col style="width:8%">
       </colgroup>
-      <thead><tr><th>Date</th><th>Doctor</th><th>OD</th><th>OS</th><th>Lens Type</th><th>Remarks</th><th></th></tr></thead>
-      <tbody>
-        ${rxList.map(rx => `<tr>
+      <thead><tr>
+        <th data-sort-key="date" data-sort-type="date">Date</th>
+        <th data-sort-key="doctor" data-sort-type="text">Doctor</th>
+        <th>OD</th><th>OS</th><th>Lens Type</th><th>Remarks</th><th></th>
+      </tr></thead>
+      <tbody id="pv-rx-tbody">
+        ${rxList.map(rx => `<tr data-search="${(rx.doctor||'').toLowerCase()} ${(rx.lensType||'').toLowerCase()}" data-sort-date="${rx.date}" data-sort-doctor="${(rx.doctor||'').toLowerCase()}">
           <td style="font-size:.78rem;white-space:nowrap">${fmtDate(rx.date)}</td>
           <td style="font-size:.78rem">${rx.doctor}</td>
           <td style="font-size:.73rem;font-family:monospace">${rx.od.sph} ${rx.od.cyl} ×${rx.od.axis}</td>
@@ -828,11 +847,108 @@ function pagePatientView() {
               ${ic('plus','icon-sm')} New Appointment
             </button>` : ''}
           </div>
-          ${appointmentsTable(patientAppts, role, 'pv-appt-tbody')}`)}
+          <div class="table-wrap" style="box-shadow:none;border:1px solid #f3f4f6">${appointmentsTable(patientAppts, role, 'pv-appt-tbody')}</div>`)}
 
       </div>
     </div>
 
+  </div>`
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SHARED — CONTACT MESSAGES INBOX (Admin, Staff)
+// ════════════════════════════════════════════════════════════════
+function pageContactMessages() {
+  const { filter } = st()
+  const statusFilter = ['unread', 'archived'].includes(filter) ? filter : 'all'
+
+  let list = contactMessages.filter(m => statusFilter === 'archived' ? !!m.archivedAt : !m.archivedAt)
+  if (statusFilter === 'unread') list = list.filter(m => !m.isRead)
+
+  const unreadCount = contactMessages.filter(m => !m.isRead && !m.archivedAt).length
+
+  window.state.afterRender = () => { window.initPagination('contact-tbody'); window.initSortable('contact-tbody') }
+
+  return `
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Contact Messages</h1>
+      <p class="page-subtitle">Messages submitted through the website's contact form</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      ${unreadCount > 0 ? `<button class="btn-secondary" onclick="window.markAllContactRead()">
+        ${ic('check', 'icon-sm')} Mark All as Read</button>` : ''}
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="table-wrap">
+      <div class="filter-tabs">
+        ${[['all', 'All'], ['unread', 'Unread'], ['archived', 'Archived']].map(([key, lbl]) => `
+          <button class="filter-tab${statusFilter === key ? ' active' : ''}"
+                  onclick="window.navigate('contact-messages',{filter:'${key}'})">
+            ${lbl}${key === 'unread' && unreadCount > 0 ? ` (${unreadCount})` : ''}
+          </button>`).join('')}
+      </div>
+      <div class="table-toolbar">
+        <span class="table-title">${list.length} message${list.length !== 1 ? 's' : ''}</span>
+        <div class="table-actions">
+          <div class="search-input-wrap">
+            ${ic('search', 'icon-sm')}
+            <input class="search-input" placeholder="Search by name, email, message…"
+                   oninput="window.filterTable(this,'contact-tbody')">
+          </div>
+        </div>
+      </div>
+      ${list.length === 0 ? `
+        <div style="text-align:center;padding:60px 20px;color:#9CA3AF">
+          <p style="font-size:.88rem">No ${statusFilter === 'unread' ? 'unread ' : statusFilter === 'archived' ? 'archived ' : ''}messages${statusFilter === 'all' ? ' yet' : ''}.</p>
+        </div>` : `
+      <table class="tbl">
+        <colgroup>
+          <col style="width:22%"><col style="width:13%"><col style="width:39%"><col style="width:13%"><col style="width:13%">
+        </colgroup>
+        <thead><tr>
+          <th data-sort-key="from" data-sort-type="text">From</th>
+          <th>Service</th><th>Message</th>
+          <th data-sort-key="received" data-sort-type="date">Received</th>
+          <th></th>
+        </tr></thead>
+        <tbody id="contact-tbody">
+          ${list.map(m => {
+            const excerpt = (m.message || '').length > 90 ? m.message.slice(0, 90) + '…' : (m.message || '')
+            return `<tr data-search="${(m.name || '').toLowerCase()} ${(m.email || '').toLowerCase()} ${(m.message || '').toLowerCase()}"
+                        data-sort-from="${(m.name || '').toLowerCase()}" data-sort-received="${m.createdAt || ''}"
+                        class="${!m.isRead ? 'msg-unread' : ''}" style="cursor:pointer"
+                        onclick="window.openContactMessageModal(${m.id})">
+              <td><div class="patient-name-cell">
+                ${!m.isRead ? '<span class="msg-dot" title="Unread"></span>' : ''}
+                ${avatar(m.name, 'patient-avatar')}
+                <div class="patient-name-info"><strong>${m.name}</strong><span>${m.email}</span></div>
+              </div></td>
+              <td style="font-size:.82rem">${m.service || '—'}</td>
+              <td style="font-size:.82rem;color:#6b7280">
+                ${excerpt}
+                ${m.reply ? `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-size:.68rem;font-weight:600;color:#059669;background:#ECFDF5;border:1px solid #A7F3D0;border-radius:999px;padding:1px 8px;white-space:nowrap">${ic('check', 'icon-xs')} Replied</span>` : ''}
+              </td>
+              <td style="font-size:.78rem;color:#9ca3af;white-space:nowrap">${window._notifTimeAgo(m.createdAt)}</td>
+              <td onclick="event.stopPropagation()">
+                <div style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap">
+                  <button class="btn-icon" title="${m.archivedAt ? 'Move back to inbox' : 'Archive'}"
+                          onclick="window.toggleContactMessageArchive(${m.id})">
+                    ${ic(m.archivedAt ? 'rotate-ccw' : 'archive', 'icon-sm')}
+                  </button>
+                  <button class="btn-icon" title="Delete" style="color:#DC2626"
+                          onclick="window.confirmDeleteContactMessage(${m.id})">
+                    ${ic('trash-2', 'icon-sm')}
+                  </button>
+                </div>
+              </td>
+            </tr>`
+          }).join('')}
+        </tbody>
+      </table>
+      `}
+    </div>
   </div>`
 }
 
@@ -1432,8 +1548,141 @@ function pageAdminReports() {
 //  ADMIN — SETTINGS
 // ════════════════════════════════════════════════════════════════
 function pageAdminSettings() {
-  const validSections = ['clinic', 'services', 'consultation', 'archives']
+  const validSections = ['profile', 'clinic', 'services', 'consultation', 'archives']
   const sec = validSections.includes(st().filter) ? st().filter : 'clinic'
+
+  // ── Section: My Profile ──────────────────────────────────────
+  function sectionProfile() {
+    const { user } = st()
+    const adm = admins.find(a => a.id === user?.id) || user || {}
+    const admName = adm.name || `${adm.firstName || ''} ${adm.lastName || ''}`.trim() || 'Administrator'
+
+    const pwField = (id, placeholder) => `
+      <div style="position:relative">
+        <input type="password" class="form-input" id="${id}" placeholder="${placeholder}" style="padding-right:40px">
+        <button type="button" onclick="window.togglePwVisibility('${id}',this)"
+                style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9CA3AF;padding:2px;display:flex;align-items:center">
+          ${ic('eye','icon-sm')}
+        </button>
+      </div>`
+
+    return `
+    <style>
+      @media (min-width: 1024px) { .ad-sett-col { display: grid !important; grid-template-columns: 55fr 45fr; gap: 20px; align-items: start; } }
+    </style>
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 class="page-title">My Profile</h1>
+        <p class="page-subtitle">Manage your personal account details.</p>
+      </div>
+    </div>
+    <div class="page-body">
+
+      <!-- Profile Banner -->
+      <div class="card" style="padding:28px 32px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+          <div style="position:relative;flex-shrink:0">
+            <label for="ad-photo-input" style="cursor:pointer;display:block;width:80px;height:80px;border-radius:50%;overflow:hidden;position:relative">
+              <div id="ad-avatar" style="width:80px;height:80px;border-radius:50%;background:#E8760A;color:#fff;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden">
+                ${user.photoUrl
+                  ? `<img src="${user.photoUrl}" alt="Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block">`
+                  : initials(admName)}
+              </div>
+              <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;transition:background .2s"
+                   onmouseover="this.style.background='rgba(0,0,0,.45)'"
+                   onmouseout="this.style.background='rgba(0,0,0,0)'"></div>
+            </label>
+            <label for="ad-photo-input" style="position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;background:#E8760A;border:2px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2)">
+              ${ic('camera','icon-sm')}
+            </label>
+            <input type="file" id="ad-photo-input" accept="image/*" style="display:none"
+                   onchange="window.handlePhotoUpload(this,'ad-avatar')">
+          </div>
+          <div style="flex:1;min-width:160px">
+            <div style="font-size:1.2rem;font-weight:700;color:#1C1C1C">${admName}</div>
+            <div style="font-size:.85rem;color:#E8760A;font-weight:600;margin-top:3px">Administrator</div>
+            <div style="font-size:.82rem;color:#6B7280;margin-top:4px">${adm.email || ''}</div>
+            <div style="font-size:.82rem;color:#6B7280">${adm.contact || ''}</div>
+          </div>
+          <label for="ad-photo-input" class="btn-secondary" style="flex-shrink:0;cursor:pointer">
+            ${ic('camera','icon-sm')} Change Photo
+          </label>
+        </div>
+      </div>
+
+      <div class="ad-sett-col" style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- LEFT: Personal Info -->
+        <div class="card" style="padding:28px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+            <div style="color:#E8760A">${ic('user','icon-sm')}</div>
+            <div style="font-size:1.05rem;font-weight:700;color:#1C1C1C">Personal Information</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input class="form-input" id="ad-fname" value="${adm.firstName || ''}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input class="form-input" id="ad-lname" value="${adm.lastName || ''}">
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input class="form-input" type="email" id="ad-email" value="${adm.email || ''}">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input class="form-input" id="ad-phone" value="${adm.contact || ''}">
+              </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:4px">
+              <button class="btn-primary" onclick="window.saveUserProfile()">
+                ${ic('check','icon-sm')} Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Security -->
+        <div class="card" style="padding:28px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <div style="color:#E8760A">${ic('shield','icon-sm')}</div>
+            <div style="font-size:1.05rem;font-weight:700;color:#1C1C1C">Security</div>
+          </div>
+          <div style="font-size:.82rem;color:#9CA3AF;margin-bottom:20px">Change your account password</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              ${pwField('ad-curpw','Enter current password')}
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              ${pwField('ad-newpw','Minimum 8 characters')}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              ${pwField('ad-confpw','Repeat new password')}
+              <div id="ad-pw-err" style="color:#DC2626;font-size:.75rem;margin-top:5px;display:none">Passwords do not match.</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:6px;font-size:.78rem;color:#9CA3AF">
+              ${ic('info','icon-sm')} Minimum 8 characters with at least one number and one letter.
+            </div>
+            <div style="display:flex;justify-content:flex-end">
+              <button class="btn-primary"
+                      onclick="window.validateSettingsPassword('ad-newpw','ad-confpw','ad-pw-err','ad-curpw')">
+                ${ic('lock','icon-sm')} Update Password
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>`
+  }
 
   // ── Section: Clinic Information ─────────────────────────────
   function sectionClinic() {
@@ -1475,7 +1724,7 @@ function pageAdminSettings() {
         <div style="font-size:.85rem;font-weight:600;color:#374151;margin-bottom:12px">Clinic Logo</div>
         <div style="display:flex;align-items:center;gap:16px">
           <div style="width:60px;height:60px;border-radius:50%;background:#FFF0DC;border:1.5px solid #FFD9A8;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
-            <img id="ci-logo-preview" src="brand_assests/cana logo.png" style="width:50px;height:50px;object-fit:contain">
+            <img id="ci-logo-preview" src="${clinicInfo.logoUrl || 'brand_assests/cana logo.png'}" style="width:50px;height:50px;object-fit:contain">
           </div>
           <div>
             <label for="ci-logo-input" style="cursor:pointer">
@@ -1483,7 +1732,7 @@ function pageAdminSettings() {
                 ${ic('upload','icon-sm')} Upload New Logo
               </div>
             </label>
-            <div style="font-size:.72rem;color:#9CA3AF;margin-top:4px">PNG, JPG, SVG — max 2 MB</div>
+            <div style="font-size:.72rem;color:#9CA3AF;margin-top:4px">PNG, JPG, SVG</div>
             <input type="file" id="ci-logo-input" accept="image/*" style="display:none"
                    onchange="window.handleLogoUpload(this,'ci-logo-preview')">
           </div>
@@ -1552,19 +1801,20 @@ function pageAdminSettings() {
         <div class="table-toolbar">
           <span class="table-title" id="svc-count">${CLINIC_SERVICES.length} service${CLINIC_SERVICES.length !== 1 ? 's' : ''}</span>
         </div>
-        <div style="overflow-x:auto">
         <table class="tbl" style="table-layout:fixed">
           <colgroup>
             <col style="width:5%"><col style="width:20%"><col style="width:32%">
             <col style="width:10%"><col style="width:11%"><col style="width:12%">
           </colgroup>
           <thead><tr>
-            <th>#</th><th>Service Name</th><th>Description</th>
+            <th>#</th>
+            <th data-sort-key="name" data-sort-type="text">Service Name</th>
+            <th>Description</th>
             <th>Duration</th><th>Status</th><th>Actions</th>
           </tr></thead>
           <tbody id="services-tbody">
             ${CLINIC_SERVICES.map((s, i) => `
-            <tr data-search="${s.name.toLowerCase()} ${s.description.toLowerCase()}">
+            <tr data-search="${s.name.toLowerCase()} ${s.description.toLowerCase()}" data-sort-name="${s.name.toLowerCase()}">
               <td style="color:#9CA3AF;font-size:.75rem">${i + 1}</td>
               <td><strong style="font-size:.83rem">${s.name}</strong></td>
               <td style="font-size:.78rem;color:#6B7280;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:0">${s.description}</td>
@@ -1581,7 +1831,6 @@ function pageAdminSettings() {
             </tr>`).join('')}
           </tbody>
         </table>
-        </div>
       </div>
     </div>`
   }
@@ -1745,16 +1994,19 @@ function pageAdminSettings() {
           </div>
         </div>
         ${list.length ? `
-        <div style="overflow-x:auto">
         <table class="tbl" style="table-layout:fixed;min-width:700px">
           <colgroup>
             <col style="width:10%"><col style="width:26%"><col style="width:13%"><col style="width:27%"><col style="width:12%"><col style="width:12%">
           </colgroup>
           <thead><tr>
-            <th>Type</th><th>Name / ID</th><th>Archived By</th><th>Reason</th><th>Date</th><th>Actions</th>
+            <th>Type</th>
+            <th data-sort-key="name" data-sort-type="text">Name / ID</th>
+            <th>Archived By</th><th>Reason</th>
+            <th data-sort-key="date" data-sort-type="date">Date</th>
+            <th>Actions</th>
           </tr></thead>
           <tbody id="archives-tbody">
-            ${list.map(r => `<tr data-search="${r.name.toLowerCase()} ${r.refId.toLowerCase()} ${r.archivedBy.toLowerCase()}">
+            ${list.map(r => `<tr data-search="${r.name.toLowerCase()} ${r.refId.toLowerCase()} ${r.archivedBy.toLowerCase()}" data-sort-name="${r.name.toLowerCase()}" data-sort-date="${r.date}">
               <td style="white-space:nowrap">${typeBadge(r.type)}</td>
               <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">
                 <span style="font-size:.82rem;font-weight:600;color:#1f2937">${r.name}</span>
@@ -1772,16 +2024,16 @@ function pageAdminSettings() {
               </td>
             </tr>`).join('')}
           </tbody>
-        </table></div>` : `
+        </table>` : `
         <div class="table-empty" style="padding:40px">No archived records${arcFilter!=='all'?' of this type':''}.</div>`}
       </div>
     </div>`
   }
 
-  if (sec === 'archives') window.state.afterRender = () => window.initPagination('archives-tbody')
-  if (sec === 'services') window.state.afterRender = () => window.initPagination('services-tbody')
+  if (sec === 'archives') window.state.afterRender = () => { window.initPagination('archives-tbody'); window.initSortable('archives-tbody') }
+  if (sec === 'services') window.state.afterRender = () => { window.initPagination('services-tbody'); window.initSortable('services-tbody') }
 
-  const sections = { clinic: sectionClinic, services: sectionServices, consultation: sectionConsultation, archives: sectionArchives }
+  const sections = { profile: sectionProfile, clinic: sectionClinic, services: sectionServices, consultation: sectionConsultation, archives: sectionArchives }
   return (sections[sec] || sections.clinic)()
 }
 
@@ -1809,7 +2061,7 @@ function pageActivityLog() {
   const today      = new Date().toISOString().split('T')[0]
   const monthStart = today.slice(0,8) + '01'
 
-  window.state.afterRender = () => { window.initPagination('log-tbody'); window.applyLogFilters() }
+  window.state.afterRender = () => { window.initPagination('log-tbody'); window.initSortable('log-tbody'); window.applyLogFilters() }
 
   return `
   <div class="page-header">
@@ -1875,19 +2127,26 @@ function pageActivityLog() {
       <div class="table-toolbar" style="padding:10px 16px">
         <span class="table-title" id="log-count">${activityLog.length} log entries</span>
       </div>
-      <div style="overflow-x:auto">
       <table class="tbl">
         <colgroup>
           <col style="width:5%"><col style="width:16%"><col style="width:9%">
           <col style="width:38%"><col style="width:18%"><col style="width:14%">
         </colgroup>
-        <thead><tr><th>#</th><th>User</th><th>Role</th><th>Action</th><th>Timestamp</th><th>Type</th></tr></thead>
+        <thead><tr>
+          <th>#</th>
+          <th data-sort-key="user" data-sort-type="text">User</th>
+          <th>Role</th><th>Action</th>
+          <th data-sort-key="ts" data-sort-type="date">Timestamp</th>
+          <th>Type</th>
+        </tr></thead>
         <tbody id="log-tbody">
           ${activityLog.map((l,i) => `<tr
             data-search="${l.user.toLowerCase()} ${l.action.toLowerCase()}"
             data-role="${l.role.toLowerCase()}"
             data-type="${l.type}"
-            data-ts="${l.timestamp}">
+            data-ts="${l.timestamp}"
+            data-sort-user="${l.user.toLowerCase()}"
+            data-sort-ts="${l.timestamp}">
             <td style="color:#9CA3AF;font-size:.75rem">${i+1}</td>
             <td><div class="patient-name-cell">${avatar(l.user)}<strong style="font-size:.82rem">${l.user}</strong></div></td>
             <td>${badge(l.role.toLowerCase())}</td>
@@ -1900,7 +2159,6 @@ function pageActivityLog() {
           </tr>
         </tbody>
       </table>
-      </div>
       ` : `<div class="table-empty">No activities found.</div>`}
     </div>
   </div>`
@@ -2126,7 +2384,7 @@ function pageDoctorAppointments() {
   const completedList = appointments.filter(a => a.status === 'completed')
                          .sort((a,b) => b.date.localeCompare(a.date))
 
-  window.state.afterRender = () => window.initPagination('doc-appt-tbody')
+  window.state.afterRender = () => { window.initPagination('doc-appt-tbody'); window.initSortable('doc-appt-tbody') }
 
   let list
   if (activeFilter === 'today')     list = todayList
@@ -2172,18 +2430,19 @@ function pageDoctorAppointments() {
           </div>
         </div>
       </div>
-      <div style="overflow-x:auto">
       <table class="tbl">
         <colgroup>
           <col style="width:7%"><col style="width:22%"><col style="width:12%">
           <col style="width:10%"><col style="width:20%"><col style="width:13%"><col style="width:16%">
         </colgroup>
         <thead><tr>
-          <th>ID</th><th>Patient</th><th>Date</th>
+          <th>ID</th>
+          <th data-sort-key="patient" data-sort-type="text">Patient</th>
+          <th data-sort-key="date" data-sort-type="date">Date</th>
           <th>Time</th><th>Type</th><th>Status</th><th>Actions</th>
         </tr></thead>
         <tbody id="doc-appt-tbody">
-          ${list.length ? list.map(a => `<tr data-search="${(a.patientName||'').toLowerCase()} ${(a.type||'').toLowerCase()}">
+          ${list.length ? list.map(a => `<tr data-search="${(a.patientName||'').toLowerCase()} ${(a.type||'').toLowerCase()}" data-sort-patient="${(a.patientName||'').toLowerCase()}" data-sort-date="${a.date}">
             <td><code style="font-size:.73rem;color:#9CA3AF">${a.id}</code></td>
             <td><div class="patient-name-cell">
               ${avatar(a.patientName, 'patient-avatar', patients.find(p=>p.id===a.patientId)?.photoUrl || null)}
@@ -2198,7 +2457,6 @@ function pageDoctorAppointments() {
           : `<tr><td colspan="7"><div class="table-empty">No appointments found.</div></td></tr>`}
         </tbody>
       </table>
-      </div>
     </div>
   </div>`
 }
@@ -2633,7 +2891,7 @@ function pageExamRecords() {
   // Stats: doctors see only their own counts; admin/staff see clinic-wide
   const statBase = role === 'doctor' ? filtered : allExams
 
-  window.state.afterRender = () => window.initPagination('exam-records-tbody')
+  window.state.afterRender = () => { window.initPagination('exam-records-tbody'); window.initSortable('exam-records-tbody') }
 
   return `
   <div class="page-header">
@@ -2679,18 +2937,20 @@ function pageExamRecords() {
           </select>` : ''}
         </div>
       </div>
-      <div style="overflow-x:auto">
       <table class="tbl">
         <colgroup>
           <col style="width:8%"><col style="width:18%"><col style="width:16%"><col style="width:10%">
           <col style="width:14%"><col style="width:12%"><col style="width:8%"><col style="width:14%">
         </colgroup>
         <thead><tr>
-          <th>Exam ID</th><th>Patient</th><th>Doctor</th><th>Date</th>
+          <th>Exam ID</th>
+          <th data-sort-key="patient" data-sort-type="text">Patient</th>
+          <th>Doctor</th>
+          <th data-sort-key="date" data-sort-type="date">Date</th>
           <th>Diagnosis</th><th>Lens Type</th><th>Status</th><th>Actions</th>
         </tr></thead>
         <tbody id="exam-records-tbody">
-          ${filtered.map(e => `<tr data-search="${e.patientName.toLowerCase()} ${(e.diagnosis||'').toLowerCase()} ${e.doctor.toLowerCase()}">
+          ${filtered.map(e => `<tr data-search="${e.patientName.toLowerCase()} ${(e.diagnosis||'').toLowerCase()} ${e.doctor.toLowerCase()}" data-sort-patient="${e.patientName.toLowerCase()}" data-sort-date="${e.date}">
             <td><code style="font-size:.73rem;color:#9CA3AF">${e.id}</code></td>
             <td><div class="patient-name-cell">
               ${avatar(e.patientName)}
@@ -2721,7 +2981,6 @@ function pageExamRecords() {
           </tr>`).join('')}
         </tbody>
       </table>
-      </div>
     </div>
   </div>`
 }
@@ -3370,7 +3629,7 @@ function pagePatientExamHistory() {
   const myExams = user ? patients.find(p => p.id === user.id)?.examinations || [] : []
   const sorted  = [...myExams].sort((a,b) => b.date.localeCompare(a.date))
 
-  window.state.afterRender = () => window.initPagination('pt-exam-tbody')
+  window.state.afterRender = () => { window.initPagination('pt-exam-tbody'); window.initSortable('pt-exam-tbody') }
 
   return `
   <div class="page-header">
@@ -3393,17 +3652,18 @@ function pagePatientExamHistory() {
           </div>
         </div>
       </div>
-      <div style="overflow-x:auto">
       <table class="tbl">
         <colgroup>
           <col style="width:12%"><col style="width:18%"><col style="width:26%">
           <col style="width:16%"><col style="width:12%"><col style="width:16%">
         </colgroup>
         <thead><tr>
-          <th>Date</th><th>Doctor</th><th>Diagnosis</th><th>Lens Type</th><th>Status</th><th>Actions</th>
+          <th data-sort-key="date" data-sort-type="date">Date</th>
+          <th data-sort-key="doctor" data-sort-type="text">Doctor</th>
+          <th>Diagnosis</th><th>Lens Type</th><th>Status</th><th>Actions</th>
         </tr></thead>
         <tbody id="pt-exam-tbody">
-          ${sorted.map(e => `<tr data-search="${e.doctor.toLowerCase()} ${(e.diagnosis||'').toLowerCase()}">
+          ${sorted.map(e => `<tr data-search="${e.doctor.toLowerCase()} ${(e.diagnosis||'').toLowerCase()}" data-sort-date="${e.date}" data-sort-doctor="${e.doctor.toLowerCase()}">
             <td style="font-size:.82rem;white-space:nowrap;font-weight:600">${fmtDate(e.date)}</td>
             <td style="font-size:.82rem">${e.doctor}</td>
             <td style="font-size:.82rem;font-weight:600;color:#1C1C1C">${e.diagnosis}</td>
@@ -3424,7 +3684,6 @@ function pagePatientExamHistory() {
           </tr>`).join('')}
         </tbody>
       </table>
-      </div>
     </div>` : `
     <div class="table-empty" style="padding:48px">
       No examination records yet. Records will appear here after your first consultation.<br>
@@ -3599,8 +3858,14 @@ function pagePatientAppts() {
   if (tab === 'request') {
     window.state.afterRender = () => window.amcInit()
   } else {
-    window.state.afterRender = () => window.initPagination('pt-appt-tbody')
+    window.state.afterRender = () => { window.initPagination('pt-appt-tbody'); window.initSortable('pt-appt-tbody') }
   }
+
+  const _minAdv = minAdvanceDays()
+  const advanceNoticeHtml = _minAdv === 0
+    ? `You can book for <strong>today</strong> or any future date.`
+    : `Appointments must be booked <strong>at least ${_minAdv} day${_minAdv > 1 ? 's' : ''} in advance.</strong><br>
+       ${_minAdv === 1 ? 'Same-day booking is not available.' : `Booking less than ${_minAdv} days ahead is not available.`} Please select a valid date from the calendar below.`
 
   return `
   <div class="page-header">
@@ -3611,7 +3876,7 @@ function pagePatientAppts() {
   </div>
   <div class="page-body">
 
-    <div class="filter-tabs" style="margin-bottom:20px;border-bottom:1px solid #E5E7EB">
+    <div class="filter-tabs" style="margin-bottom:20px;border-bottom:1px solid #E5E7EB;position:sticky;top:0;z-index:5;background:#f5f6fa">
       <button class="filter-tab${tab==='request'?' active':''}"
               onclick="window.navigate('patient-appts',{filter:'request'})">
         ${ic('plus','icon-sm')} Request Appointment
@@ -3743,8 +4008,7 @@ function pagePatientAppts() {
             <div style="background:#eff6ff;border-left:3px solid #3b82f6;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px">
               <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" width="16" height="16" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
               <div style="font-size:.82rem;color:#1e40af;line-height:1.5">
-                Appointments must be booked <strong>at least 1 day in advance.</strong><br>
-                Same-day booking is not available. Please select a future date from the calendar below.
+                ${advanceNoticeHtml}
               </div>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -3938,16 +4202,17 @@ function pagePatientAppts() {
         </div>
       </div>
       ${myAppts.length ? `
-      <div style="overflow-x:auto">
       <table class="tbl" style="table-layout:fixed">
         <colgroup>
           <col style="width:24%"><col style="width:15%"><col style="width:12%"><col style="width:22%"><col style="width:14%"><col style="width:13%">
         </colgroup>
         <thead><tr>
-          <th>Doctor</th><th>Date</th><th>Time</th><th>Type</th><th>Status</th><th>Actions</th>
+          <th data-sort-key="doctor" data-sort-type="text">Doctor</th>
+          <th data-sort-key="date" data-sort-type="date">Date</th>
+          <th>Time</th><th>Type</th><th>Status</th><th>Actions</th>
         </tr></thead>
         <tbody id="pt-appt-tbody">
-          ${myAppts.map(a => `<tr data-search="${a.doctorName.toLowerCase()} ${a.type.toLowerCase()}" data-appt-status="${a.status}">
+          ${myAppts.map(a => `<tr data-search="${a.doctorName.toLowerCase()} ${a.type.toLowerCase()}" data-appt-status="${a.status}" data-sort-doctor="${a.doctorName.toLowerCase()}" data-sort-date="${a.date}">
             <td style="font-size:.82rem;font-weight:500">${a.doctorName}</td>
             <td style="font-size:.82rem">${fmtDate(a.date)}</td>
             <td style="font-size:.82rem;white-space:nowrap">${a.time}</td>
@@ -3963,7 +4228,7 @@ function pagePatientAppts() {
             </td>
           </tr>`).join('')}
         </tbody>
-      </table></div>` : `<div class="table-empty">No appointment history yet.</div>`}
+      </table>` : `<div class="table-empty">No appointment history yet.</div>`}
     </div>`}
   </div>`
 }
@@ -3973,6 +4238,8 @@ function pagePatientAppts() {
 // ════════════════════════════════════════════════════════════════
 function pagePatientRecords() {
   const { user } = st()
+
+  window.state.afterRender = () => { window.initPagination('pt-rec-tbody'); window.initSortable('pt-rec-tbody') }
 
   return `
   <div class="page-header">
@@ -3990,15 +4257,19 @@ function pagePatientRecords() {
     <div class="card" style="margin-bottom:20px">
       <div class="card-header"><div class="card-title">Consultation History</div></div>
       ${user.consultations.length ? `
-      <div style="overflow-x:auto">
+      <div class="table-wrap" style="box-shadow:none;border:1px solid #f3f4f6">
       <table class="tbl">
         <colgroup>
           <col style="width:12%"><col style="width:16%"><col style="width:12%">
           <col style="width:18%"><col style="width:24%"><col style="width:18%">
         </colgroup>
-        <thead><tr><th>Date</th><th>Doctor</th><th>Type</th><th>Diagnosis</th><th>Prescription</th><th>Remarks</th></tr></thead>
-        <tbody>
-          ${user.consultations.map(c=>`<tr>
+        <thead><tr>
+          <th data-sort-key="date" data-sort-type="date">Date</th>
+          <th data-sort-key="doctor" data-sort-type="text">Doctor</th>
+          <th>Type</th><th>Diagnosis</th><th>Prescription</th><th>Remarks</th>
+        </tr></thead>
+        <tbody id="pt-rec-tbody">
+          ${user.consultations.map(c=>`<tr data-search="${(c.doctor||'').toLowerCase()} ${(c.diagnosis||'').toLowerCase()} ${(c.type||'').toLowerCase()}" data-sort-date="${c.date}" data-sort-doctor="${(c.doctor||'').toLowerCase()}">
             <td style="font-size:.78rem;white-space:nowrap">${fmtDate(c.date)}</td>
             <td style="font-size:.82rem">${c.doctor}</td>
             <td style="font-size:.78rem">${c.type}</td>
@@ -4706,6 +4977,8 @@ function pagePatientDoctorAvail() {
       const isSel       = dateStr === selDate
       const isHoliday   = !!phHolidays[dateStr]
       const holidayName = phHolidays[dateStr] || ''
+      const daysOut     = Math.round((new Date(viewYear, viewMonth, d) - new Date(baseYear, baseMonth, todayDate)) / 86400000)
+      const tooSoon     = daysOut >= 0 && daysOut < minAdvanceDays()
 
       let cls = 'cal-day'
       if (isSel)                          cls += ' today'
@@ -4716,16 +4989,16 @@ function pagePatientDoctorAvail() {
       else                                cls += ' blocked'
 
       const dotCls    = dayAppts.length ? ' has-appts' : ''
-      const dimStyle  = (isPast || isFar) ? 'opacity:.35;pointer-events:none;' : ''
+      const dimStyle  = (isPast || isFar || (tooSoon && !isToday)) ? 'opacity:.35;pointer-events:none;' : ''
       const selStyle  = isSel && !isToday ? 'outline:3px solid #E8760A;outline-offset:1px;' : ''
       const styleAttr = (dimStyle || selStyle) ? ` style="${dimStyle}${selStyle}"` : ''
-      const titleAttr = isToday   ? `title="Same-day appointments are not available."` :
+      const titleAttr = tooSoon   ? `title="${minAdvanceTooltip()}"` :
                         isHoliday ? `title="Clinic closed: ${holidayName}"` : ''
-      const hoverEvt  = !isToday && !isPast && !isFar && !isHoliday && dayAppts.length
+      const hoverEvt  = !tooSoon && !isPast && !isFar && !isHoliday && dayAppts.length
         ? `onmouseenter="window.showCalTip(this,'${JSON.stringify(dayAppts).replace(/'/g,'&#39;').replace(/"/g,'&quot;')}')" onmouseleave="window.hideCalTip()"`
         : ''
-      const clickEvt  = avail && !isToday && !isPast && !isFar && !isHoliday
-        ? `onclick="window.patCalSelectDate(${doctor.id},'${dateStr}')"`
+      const clickEvt  = avail && !tooSoon && !isPast && !isFar && !isHoliday
+        ? `onclick="window.patCalSelectDate('${doctor.id}','${dateStr}')"`
         : ''
 
       const inner = isHoliday && !isPast
@@ -4787,12 +5060,12 @@ function pagePatientDoctorAvail() {
     pop.id = 'pat-cal-popover-' + docId
     pop.style.cssText = 'position:relative;margin-top:10px;background:#fff;border:1.5px solid #E8760A;border-radius:10px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.1)'
     pop.innerHTML = `
-      <button onclick="document.getElementById('pat-cal-popover-${docId}').remove();window._patCalState[${docId}].selectedDate='';window.patCalNavMonth(${docId},0)"
+      <button onclick="document.getElementById('pat-cal-popover-${docId}').remove();window._patCalState['${docId}'].selectedDate='';window.patCalNavMonth('${docId}',0)"
               style="position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:1rem;line-height:1">✕</button>
       <div style="font-size:.72rem;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Selected Date</div>
       <div style="font-size:.88rem;font-weight:700;color:#1C1C1C;margin-bottom:2px">${dayFull}</div>
       <div style="font-size:.78rem;color:#6B7280;margin-bottom:12px">${doc.name} &nbsp;·&nbsp; 8:00 AM – 5:00 PM</div>
-      <button onclick="window.patCalBookAppt(${docId})"
+      <button onclick="window.patCalBookAppt('${docId}')"
               style="width:100%;background:#E8760A;color:#fff;border:none;border-radius:8px;padding:9px 0;font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s"
               onmouseover="this.style.background='#C4620A'" onmouseout="this.style.background='#E8760A'">
         Book This Date →
@@ -4826,12 +5099,12 @@ function pagePatientDoctorAvail() {
     const btnActive = 'color:#374151'
     const btnDim    = 'color:#D1D5DB;cursor:default'
     return `
-      <button onclick="window.patCalNavMonth(${doctor.id},-1)" style="${btnBase};${canPrev ? btnActive : btnDim}"
+      <button onclick="window.patCalNavMonth('${doctor.id}',-1)" style="${btnBase};${canPrev ? btnActive : btnDim}"
               ${!canPrev ? 'disabled' : ''}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <span style="font-size:.85rem;font-weight:600;color:#1C1C1C;min-width:130px;text-align:center">${label}</span>
-      <button onclick="window.patCalNavMonth(${doctor.id},1)" style="${btnBase};${canNext ? btnActive : btnDim}"
+      <button onclick="window.patCalNavMonth('${doctor.id}',1)" style="${btnBase};${canNext ? btnActive : btnDim}"
               ${!canNext ? 'disabled' : ''}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
       </button>`
@@ -4870,7 +5143,7 @@ function pagePatientDoctorAvail() {
             <div style="font-size:.8rem;color:#6B7280;margin-top:2px">${doctor.specialization} &nbsp;·&nbsp; ${daysLabel}</div>
           </div>
           <button class="btn-primary" style="flex-shrink:0;font-size:.82rem"
-                  onclick="window.patCalBookAppt(${doctor.id})">
+                  onclick="window.patCalBookAppt('${doctor.id}')">
             ${ic('plus','icon-sm')} Book Appointment
           </button>
         </div>

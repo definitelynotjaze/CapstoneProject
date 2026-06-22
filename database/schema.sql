@@ -27,6 +27,23 @@
 --      PRIMARY KEY (`id`),
 --      FOREIGN KEY (`scanned_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
 --    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+--    CREATE TABLE IF NOT EXISTS `contact_messages` (
+--      `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+--      `name`       VARCHAR(150) NOT NULL,
+--      `email`      VARCHAR(150) NOT NULL,
+--      `service`    VARCHAR(100) NULL,
+--      `message`    TEXT         NOT NULL,
+--      `is_read`    TINYINT(1)   NOT NULL DEFAULT 0,
+--      `created_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--      PRIMARY KEY (`id`),
+--      INDEX `idx_read` (`is_read`)
+--    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+--    ALTER TABLE `contact_messages` ADD COLUMN `reply` TEXT NULL DEFAULT NULL;
+--    ALTER TABLE `contact_messages` ADD COLUMN `replied_by` VARCHAR(150) NULL DEFAULT NULL;
+--    ALTER TABLE `contact_messages` ADD COLUMN `replied_at` DATETIME NULL DEFAULT NULL;
+--    ALTER TABLE `contact_messages` ADD INDEX `idx_email` (`email`);
+--    ALTER TABLE `contact_messages` ADD COLUMN `archived_at` DATETIME NULL DEFAULT NULL;
+--    ALTER TABLE `clinic_settings` ADD COLUMN `logo_url` VARCHAR(255) NULL DEFAULT NULL AFTER `phic_no`;
 -- ================================================================
 
 SET NAMES utf8mb4;
@@ -223,6 +240,24 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   INDEX `idx_user_read` (`user_id`, `is_read`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ── Contact Messages (public contact-form submissions) ─────────────
+CREATE TABLE IF NOT EXISTS `contact_messages` (
+  `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name`        VARCHAR(150) NOT NULL,
+  `email`       VARCHAR(150) NOT NULL,
+  `service`     VARCHAR(100) NULL,
+  `message`     TEXT         NOT NULL,
+  `is_read`     TINYINT(1)   NOT NULL DEFAULT 0,
+  `reply`       TEXT         NULL,
+  `replied_by`  VARCHAR(150) NULL,
+  `replied_at`  DATETIME     NULL,
+  `archived_at` DATETIME     NULL,
+  `created_at`  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_read` (`is_read`),
+  INDEX `idx_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ── Activity Log ─────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS `activity_log` (
   `id`        VARCHAR(20)  NOT NULL,
@@ -253,6 +288,31 @@ CREATE TABLE IF NOT EXISTS `clinic_services` (
   `duration`    SMALLINT UNSIGNED NOT NULL DEFAULT 30,
   `status`      ENUM('active','inactive') NOT NULL DEFAULT 'active',
   `icon`        VARCHAR(50)  DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ── Clinic Settings (single row, id always 1 — info + consultation rules) ──
+CREATE TABLE IF NOT EXISTS `clinic_settings` (
+  `id`                            TINYINT UNSIGNED NOT NULL,
+  `name`                          VARCHAR(150) NOT NULL DEFAULT 'Cana Optical Clinic',
+  `tagline`                       VARCHAR(255) NULL DEFAULT NULL,
+  `address`                       VARCHAR(255) NULL DEFAULT NULL,
+  `phone`                         VARCHAR(30)  NULL DEFAULT NULL,
+  `email`                         VARCHAR(150) NULL DEFAULT NULL,
+  `hours`                         VARCHAR(150) NULL DEFAULT NULL,
+  `tin_no`                        VARCHAR(50)  NULL DEFAULT NULL,
+  `phic_no`                       VARCHAR(50)  NULL DEFAULT NULL,
+  `logo_url`                      VARCHAR(255) NULL DEFAULT NULL,
+  `default_duration`              VARCHAR(20)  NOT NULL DEFAULT '30 min',
+  `max_advance_booking`           VARCHAR(20)  NOT NULL DEFAULT '3 months',
+  `min_advance_booking`           VARCHAR(20)  NOT NULL DEFAULT '1 day',
+  `max_appts_per_doctor_per_day`  SMALLINT UNSIGNED NOT NULL DEFAULT 12,
+  `morning_start`                 VARCHAR(20)  NOT NULL DEFAULT '8:00 AM',
+  `morning_end`                   VARCHAR(20)  NOT NULL DEFAULT '12:00 PM',
+  `afternoon_start`               VARCHAR(20)  NOT NULL DEFAULT '1:00 PM',
+  `afternoon_end`                 VARCHAR(20)  NOT NULL DEFAULT '5:00 PM',
+  `lunch_break`                   TINYINT(1)   NOT NULL DEFAULT 1,
+  `clinic_days`                   VARCHAR(255) NOT NULL DEFAULT 'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

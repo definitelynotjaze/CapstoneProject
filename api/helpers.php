@@ -34,6 +34,15 @@ function startSession(): void {
     }
 }
 
+// Parses clinic_settings.min_advance_booking ('Same day','1 day','2 days','3 days')
+// into the minimum number of days ahead a booking must be made.
+function minAdvanceBookingDays(PDO $pdo): int {
+    $val = $pdo->query('SELECT min_advance_booking FROM clinic_settings WHERE id = 1 LIMIT 1')->fetchColumn();
+    if (!$val || stripos($val, 'same') !== false) return 0;
+    if (preg_match('/(\d+)/', $val, $m)) return (int)$m[1];
+    return 1;
+}
+
 // ── Build the frontend-compatible user object ─────────────────────
 // Maps snake_case DB columns to camelCase keys expected by pages.js.
 function buildUserObject(string $role, array $p, string $email, array $days = []): array {

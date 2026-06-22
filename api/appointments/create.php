@@ -52,6 +52,21 @@ if (!in_array($status, $allowedStatus, true)) $status = 'pending';
 try {
     $pdo = getDB();
 
+    // Enforce the clinic's minimum-advance-booking rule for self-service patient
+    // bookings (admin/staff retain discretion to schedule same-day walk-ins).
+    if ($role === 'patient') {
+        $minDays = minAdvanceBookingDays($pdo);
+        $today   = new DateTime('today');
+        $reqDate = new DateTime($date);
+        $daysOut = (int)$today->diff($reqDate)->format('%r%a');
+        if ($daysOut < $minDays) {
+            $msg = $minDays === 0
+                ? 'Please select a valid date.'
+                : "Appointments must be booked at least {$minDays} day" . ($minDays > 1 ? 's' : '') . ' in advance.';
+            jsonResponse(['success' => false, 'message' => $msg]);
+        }
+    }
+
     // Generate next ID: A001, A002, …
     $last = $pdo->query("SELECT id FROM appointments ORDER BY id DESC LIMIT 1")->fetchColumn();
     $next = 1;

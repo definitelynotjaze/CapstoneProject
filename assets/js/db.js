@@ -770,65 +770,62 @@ function getExamRecords() {
   return result
 }
 
-var CLINIC_SERVICES = (function() {
-  var defaults = [
-    { id: 1, name: 'Eye Examination',                   description: "A comprehensive assessment of the patient's eye condition to evaluate vision and overall eye health.",                    duration: 30, status: 'active', icon: 'eye' },
-    { id: 2, name: 'Vision Screening',                  description: 'A basic check to determine if a patient has possible vision problems that may require further examination.',              duration: 15, status: 'active', icon: 'activity' },
-    { id: 3, name: 'Refraction',                        description: "A procedure used to determine the correct lens power needed to improve the patient's vision.",                            duration: 25, status: 'active', icon: 'search' },
-    { id: 4, name: 'Diagnosis of Refractive Errors',    description: 'Identification of vision conditions such as nearsightedness, farsightedness, and astigmatism.',                          duration: 25, status: 'active', icon: 'alert-circle' },
-    { id: 5, name: 'Prescription of Corrective Lenses', description: "Issuance of eyeglass or contact lens prescriptions based on the patient's vision needs.",                               duration: 20, status: 'active', icon: 'file-text' },
-    { id: 6, name: 'Lens Fitting',                      description: 'Adjustment and fitting of lenses to ensure proper alignment, comfort, and visual clarity.',                              duration: 20, status: 'active', icon: 'award' },
-    { id: 7, name: 'Optical Frame Selection',           description: 'Assisting patients in choosing frames that fit properly and suit their preferences.',                                    duration: 15, status: 'active', icon: 'archive' },
-    { id: 8, name: 'Follow-up Consultation',            description: "Subsequent visits to review the patient's vision condition and assess any changes after treatment or prescription.",     duration: 20, status: 'active', icon: 'refresh-cw' }
-  ]
-  try {
-    var saved = localStorage.getItem('opticana_clinicServices')
-    return saved ? JSON.parse(saved) : defaults
-  } catch(e) { return defaults }
-})()
-var _svcNextId = (function() {
-  try {
-    var saved = localStorage.getItem('opticana_svcNextId')
-    return saved ? parseInt(saved) : 9
-  } catch(e) { return 9 }
-})()
+// Defaults shown until _syncClinicSettings() replaces these with live DB data.
+var CLINIC_SERVICES = [
+  { id: 1, name: 'Eye Examination',                   description: "A comprehensive assessment of the patient's eye condition to evaluate vision and overall eye health.",                    duration: 30, status: 'active', icon: 'eye' },
+  { id: 2, name: 'Vision Screening',                  description: 'A basic check to determine if a patient has possible vision problems that may require further examination.',              duration: 15, status: 'active', icon: 'activity' },
+  { id: 3, name: 'Refraction',                        description: "A procedure used to determine the correct lens power needed to improve the patient's vision.",                            duration: 25, status: 'active', icon: 'search' },
+  { id: 4, name: 'Diagnosis of Refractive Errors',    description: 'Identification of vision conditions such as nearsightedness, farsightedness, and astigmatism.',                          duration: 25, status: 'active', icon: 'alert-circle' },
+  { id: 5, name: 'Prescription of Corrective Lenses', description: "Issuance of eyeglass or contact lens prescriptions based on the patient's vision needs.",                               duration: 20, status: 'active', icon: 'file-text' },
+  { id: 6, name: 'Lens Fitting',                      description: 'Adjustment and fitting of lenses to ensure proper alignment, comfort, and visual clarity.',                              duration: 20, status: 'active', icon: 'award' },
+  { id: 7, name: 'Optical Frame Selection',           description: 'Assisting patients in choosing frames that fit properly and suit their preferences.',                                    duration: 15, status: 'active', icon: 'archive' },
+  { id: 8, name: 'Follow-up Consultation',            description: "Subsequent visits to review the patient's vision condition and assess any changes after treatment or prescription.",     duration: 20, status: 'active', icon: 'refresh-cw' }
+]
+var _svcNextId = 9
 
-var clinicInfo = (function() {
-  var defaults = {
-    name: 'Cana Optical Clinic',
-    tagline: 'Clear Vision. Compassionate Care.',
-    address: 'Unit 3 Paseo de Carmona, Brgy. Maduya, Carmona, Cavite',
-    phone: '0929 663 6080',
-    mobile: '0929 663 6080',
-    email: 'canaopticalclinic@gmail.com',
-    hours: 'Monday – Saturday: 9:00 AM – 5:00 PM',
-    tinNo: '123-456-789-000',
-    phicNo: '01-123456789-0'
-  }
-  try {
-    var saved = localStorage.getItem('opticana_clinicInfo')
-    return saved ? Object.assign({}, defaults, JSON.parse(saved)) : defaults
-  } catch(e) { return defaults }
-})()
+var clinicInfo = {
+  name: 'Cana Optical Clinic',
+  tagline: 'Clear Vision. Compassionate Care.',
+  address: 'Unit 3 Paseo de Carmona, Brgy. Maduya, Carmona, Cavite',
+  phone: '0929 663 6080',
+  mobile: '0929 663 6080',
+  email: 'canaopticalclinic@gmail.com',
+  hours: 'Monday – Saturday: 9:00 AM – 5:00 PM',
+  tinNo: '123-456-789-000',
+  phicNo: '01-123456789-0',
+  logoUrl: null
+}
 
-var consultationSettings = (function() {
-  var defaults = {
-    defaultDuration:         '30 min',
-    maxAdvanceBooking:       '3 months',
-    minAdvanceBooking:       '1 day',
-    maxApptsPerDoctorPerDay: 12,
-    morningStart:   '8:00 AM',
-    morningEnd:     '12:00 PM',
-    afternoonStart: '1:00 PM',
-    afternoonEnd:   '5:00 PM',
-    lunchBreak:  true,
-    clinicDays:  ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-  }
-  try {
-    var saved = localStorage.getItem('opticana_consultationSettings')
-    return saved ? Object.assign({}, defaults, JSON.parse(saved)) : defaults
-  } catch(e) { return defaults }
-})()
+var consultationSettings = {
+  defaultDuration:         '30 min',
+  maxAdvanceBooking:       '3 months',
+  minAdvanceBooking:       '1 day',
+  maxApptsPerDoctorPerDay: 12,
+  morningStart:   '8:00 AM',
+  morningEnd:     '12:00 PM',
+  afternoonStart: '1:00 PM',
+  afternoonEnd:   '5:00 PM',
+  lunchBreak:  true,
+  clinicDays:  ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+}
+
+// Parses consultationSettings.minAdvanceBooking ('Same day','1 day','2 days',…)
+// into the minimum number of days ahead a patient booking must be made.
+// Booking calendars (wizard + Doctor Availability) read this so the rule
+// stays in sync the moment admin changes it in Settings — no hardcoded "today".
+function minAdvanceDays() {
+  const v = (consultationSettings.minAdvanceBooking || '').toLowerCase()
+  if (!v || v.includes('same')) return 0
+  const m = v.match(/\d+/)
+  return m ? parseInt(m[0], 10) : 1
+}
+
+function minAdvanceTooltip() {
+  const n = minAdvanceDays()
+  if (n === 0) return ''
+  if (n === 1) return 'Same-day appointments are not available.'
+  return `Appointments must be booked at least ${n} days in advance.`
+}
 
 // Helpers that work on the raw data
 function getPatientById(id)     { return patients.find(p => p.id === id) }
@@ -848,7 +845,12 @@ function getTodayAppts() {
 
 function updateAppointmentStatus(id, status) {
   const a = appointments.find(a => a.id === id)
-  if (a) a.status = status
+  if (a) {
+    a.status = status
+    // Deciding the appointment's status supersedes any reschedule request
+    // still attached to it (mirrors the server-side clear in update.php)
+    delete a.rescheduleRequest
+  }
 }
 
 function addAppointment(appt) {
@@ -884,3 +886,6 @@ function removeArchivedRecord(id) {
   const idx = archivedRecords.findIndex(r => r.id === id)
   if (idx !== -1) archivedRecords.splice(idx, 1)
 }
+
+// ── Contact Messages (public contact-form submissions) ─────────
+var contactMessages = []

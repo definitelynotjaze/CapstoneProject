@@ -17,7 +17,6 @@ function _showLoginError(msg) {
 async function handleLogin() {
   const email   = document.getElementById('login-email').value.trim()
   const pass    = document.getElementById('login-password').value
-  const remember = document.getElementById('login-remember')?.checked || false
   document.getElementById('login-error').style.display = 'none'
   clearTimeout(window._loginErrTimer)
 
@@ -49,13 +48,11 @@ async function handleLogin() {
       return
     }
 
-    _persistRememberMe(remember, email, data.role, data.user)
     _bootAfterAuth(data.role, data.user)
   } catch (_) {
     // PHP not available — fall back to client-side credential check
     const match = _clientSideLogin(email, pass)
     if (match) {
-      _persistRememberMe(remember, email, match.role, match.user)
       _bootAfterAuth(match.role, match.user)
     } else {
       _showLoginError('The email or password you entered is incorrect. Please try again.')
@@ -71,8 +68,6 @@ async function handleLogin() {
 async function logout() {
   try { await fetch('api/auth/logout.php', { method: 'POST' }) } catch (_) {}
 
-  try { localStorage.removeItem('opticana_remember_session') } catch (_) {}
-
   if (window.closeModal) window.closeModal()
 
   window.state.role            = null
@@ -85,17 +80,9 @@ async function logout() {
 
   document.getElementById('app-shell').style.display   = 'none'
   document.getElementById('login-screen').style.display = 'flex'
+  document.getElementById('login-email').value          = ''
   document.getElementById('login-password').value       = ''
   document.getElementById('login-error').style.display  = 'none'
-
-  // Only pre-fill email if Remember Me is still active in localStorage
-  try {
-    const saved = localStorage.getItem('opticana_remember_email')
-    const emailEl    = document.getElementById('login-email')
-    const rememberEl = document.getElementById('login-remember')
-    if (emailEl)    emailEl.value    = saved || ''
-    if (rememberEl) rememberEl.checked = !!saved
-  } catch (_) {}
 }
 
 // ── Register ─────────────────────────────────────────────────────
@@ -170,16 +157,10 @@ async function handleRegister() {
 
 // ── Session restore (called from index.html on page load) ─────────
 async function restoreSession() {
-  // Always pre-fill the remembered email so it's visible on the login form
-  _applyRememberedEmail()
-
   try {
     const res  = await fetch('api/auth/me.php')
     const data = await res.json()
-    if (!data.success) {
-      _tryLocalSession()
-      return
-    }
+    if (!data.success) return // no active session — login screen stays as-is
 
     // Sync in-memory state with the logged-in user so pages.js works
     const { role, user } = data
@@ -190,8 +171,7 @@ async function restoreSession() {
 
     _bootAfterAuth(role, user)
   } catch (_) {
-    // PHP not available or no active session — try localStorage remember-me
-    _tryLocalSession()
+    // PHP not available — leave the login screen showing
   }
 }
 
@@ -481,15 +461,6 @@ function fpTogglePw(inputId, iconId) {
 
 // ── Private helpers ───────────────────────────────────────────────
 function _bootAfterAuth(role, user) {
-  // Server is now the source of truth for photos.
-  // Fall back to localStorage only for photos uploaded before server storage was added.
-  if (user?.id && !user.photoUrl) {
-    try {
-      const cached = localStorage.getItem('opticana_photo_' + user.id)
-      if (cached) user.photoUrl = cached
-    } catch (_) {}
-  }
-
   window.state.role         = role
   window.state.user         = user
   window.state.selectedRole = role
@@ -503,9 +474,12 @@ function _bootAfterAuth(role, user) {
   // Load real data from backend (non-blocking)
   _syncAppointments()
   _syncNotifications()
+  _syncClinicSettings()
+  _syncServices()
   if (role === 'admin') { _syncActivityLog(); _syncStaff(); _syncArchives() }
   if (role === 'staff') _syncStaff()
   if (['admin', 'staff', 'doctor'].includes(role)) { _syncPatients(); _syncDoctors() }
+  if (['admin', 'staff'].includes(role)) _syncContactMessages()
 }
 
 // Pages that show appointments list — need full re-render when data changes
@@ -539,15 +513,6 @@ async function _syncPatients() {
     if (!r.ok) return
     const d = await r.json()
     if (!d.success || !Array.isArray(d.patients)) return
-    // Photos come from server; use localStorage only as a fallback for older entries
-    d.patients.forEach(p => {
-      if (!p.photoUrl) {
-        try {
-          const cached = localStorage.getItem('opticana_photo_' + p.id)
-          if (cached) p.photoUrl = cached
-        } catch (_) {}
-      }
-    })
     patients.splice(0, patients.length, ...d.patients)
     // Re-render page if it shows patients list
     const p = window.state?.page
@@ -606,6 +571,68 @@ async function _syncArchives() {
 }
 window._syncArchives = _syncArchives
 
+// ── Contact messages sync ──────────────────────────────────────────
+window._contactUnreadCount = 0
+
+async function _syncContactMessages() {
+  try {
+    const r = await fetch('api/contact/index.php')
+    if (!r.ok) return
+    const d = await r.json()
+    if (!d.success || !Array.isArray(d.messages)) return
+    contactMessages.splice(0, contactMessages.length, ...d.messages)
+    window._contactUnreadCount = d.unread_count || 0
+    if (window._updateSidebarBadges) window._updateSidebarBadges()
+    if (window.state?.page === 'contact-messages' && window.renderPage) window.renderPage()
+  } catch (_) {}
+}
+window._syncContactMessages = _syncContactMessages
+
+// ── Clinic settings + services sync ─────────────────────────────────
+const _CLINIC_SETTINGS_PAGES = new Set([
+  'admin-settings', 'doctor-availability', 'patient-appts', 'patient-dashboard'
+])
+
+async function _syncClinicSettings() {
+  try {
+    const r = await fetch('api/clinic/settings.php')
+    if (!r.ok) return
+    const d = await r.json()
+    if (!d.success || !d.settings) return
+    const s = d.settings
+    Object.assign(clinicInfo, {
+      name: s.name, tagline: s.tagline, address: s.address, phone: s.phone,
+      mobile: s.mobile, email: s.email, hours: s.hours, tinNo: s.tinNo, phicNo: s.phicNo,
+      logoUrl: s.logoUrl
+    })
+    Object.assign(consultationSettings, {
+      defaultDuration: s.defaultDuration, maxAdvanceBooking: s.maxAdvanceBooking,
+      minAdvanceBooking: s.minAdvanceBooking, maxApptsPerDoctorPerDay: s.maxApptsPerDoctorPerDay,
+      morningStart: s.morningStart, morningEnd: s.morningEnd,
+      afternoonStart: s.afternoonStart, afternoonEnd: s.afternoonEnd,
+      lunchBreak: s.lunchBreak, clinicDays: s.clinicDays
+    })
+    if (s.logoUrl) window._clinicLogoUrl = s.logoUrl
+    if (window.renderSidebar) window.renderSidebar()
+    if (window.renderTopbar) window.renderTopbar()
+    if (_CLINIC_SETTINGS_PAGES.has(window.state?.page) && window.renderPage) window.renderPage()
+  } catch (_) {}
+}
+window._syncClinicSettings = _syncClinicSettings
+
+async function _syncServices() {
+  try {
+    const r = await fetch('api/services/index.php')
+    if (!r.ok) return
+    const d = await r.json()
+    if (!d.success || !Array.isArray(d.services)) return
+    CLINIC_SERVICES.splice(0, CLINIC_SERVICES.length, ...d.services)
+    _svcNextId = Math.max(0, ...d.services.map(s => s.id)) + 1
+    if (_CLINIC_SETTINGS_PAGES.has(window.state?.page) && window.renderPage) window.renderPage()
+  } catch (_) {}
+}
+window._syncServices = _syncServices
+
 // ── Notifications sync ────────────────────────────────────────────
 window._notifications = []
 window._unreadCount   = 0
@@ -637,40 +664,6 @@ async function _syncActivityLog() {
   } catch (_) {}
 }
 window._syncActivityLog = _syncActivityLog
-
-// ── Remember-Me helpers ───────────────────────────────────────────
-function _persistRememberMe(checked, email, role, user) {
-  try {
-    if (checked) {
-      const clean = Object.assign({}, user)
-      delete clean.password
-      localStorage.setItem('opticana_remember_email',   email)
-      localStorage.setItem('opticana_remember_session', JSON.stringify({ role, user: clean }))
-    } else {
-      localStorage.removeItem('opticana_remember_session')
-      localStorage.removeItem('opticana_remember_email')
-    }
-  } catch (_) {}
-}
-
-function _applyRememberedEmail() {
-  try {
-    const saved   = localStorage.getItem('opticana_remember_email')
-    const emailEl    = document.getElementById('login-email')
-    const rememberEl = document.getElementById('login-remember')
-    if (emailEl)    emailEl.value    = saved || ''
-    if (rememberEl) rememberEl.checked = !!saved
-  } catch (_) {}
-}
-
-function _tryLocalSession() {
-  try {
-    const raw = localStorage.getItem('opticana_remember_session')
-    if (!raw) return
-    const { role, user } = JSON.parse(raw)
-    if (role && user) _bootAfterAuth(role, user)
-  } catch (_) {}
-}
 
 function _clientSideLogin(email, pass) {
   const sources = [
@@ -707,27 +700,3 @@ function toggleLoginPw() {
   if (input.type === 'password') { input.type = 'text'; icon.innerHTML = EYE_CLOSED }
   else { input.type = 'password'; icon.innerHTML = EYE_OPEN }
 }
-
-// Attach Remember Me change listener once on page load.
-// Unchecking immediately wipes saved credentials so they never come back.
-;(function() {
-  function _attachRememberListener() {
-    const cb = document.getElementById('login-remember')
-    if (!cb) return
-    cb.addEventListener('change', function() {
-      if (!this.checked) {
-        try {
-          localStorage.removeItem('opticana_remember_email')
-          localStorage.removeItem('opticana_remember_session')
-        } catch (_) {}
-        const emailEl = document.getElementById('login-email')
-        if (emailEl) emailEl.value = ''
-      }
-    })
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _attachRememberListener)
-  } else {
-    _attachRememberListener()
-  }
-})()

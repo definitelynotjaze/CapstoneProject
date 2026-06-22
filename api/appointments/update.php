@@ -74,8 +74,12 @@ try {
             jsonResponse(['success' => false, 'message' => 'Patients may only cancel appointments.'], 403);
         }
 
+        // Deciding the appointment's status (approve/disapprove/cancel/complete)
+        // supersedes any reschedule request still sitting on it — otherwise the
+        // "Reschedule Req." flag keeps showing after the appointment has already
+        // moved on, even though nobody addressed the patient's actual ask.
         $pdo->prepare(
-            'UPDATE appointments SET status = ?, cancellation_reason = ? WHERE id = ?'
+            'UPDATE appointments SET status = ?, cancellation_reason = ?, reschedule_request = NULL WHERE id = ?'
         )->execute([$newStatus, $cancelReason ?: null, $id]);
 
         // Update last_visit on patient if completed
@@ -118,12 +122,32 @@ try {
         $newDate = trim($b['date'] ?? '');
         $newTime = trim($b['time'] ?? '');
         $note    = trim($b['rescheduleNote'] ?? '');
+        // True when this reschedule is fulfilling a specific patient-submitted
+        // request (the "Accept & Reschedule" button), as opposed to an ad-hoc
+        // reschedule the staff/admin initiated on their own.
+        $fulfillRequest = !empty($b['fulfillRequest']);
         if (!$newDate || !$newTime) {
             jsonResponse(['success' => false, 'message' => 'Date and time are required.']);
         }
-        $pdo->prepare(
-            'UPDATE appointments SET date = ?, time = ?, reschedule_note = ?, reschedule_request = NULL WHERE id = ?'
-        )->execute([$newDate, $newTime, $note ?: null, $id]);
+
+        if ($fulfillRequest) {
+            // Only apply if the request is still pending — guards against the
+            // same request being accepted twice from two different sessions/tabs
+            // (e.g. admin and staff both viewing it), which would otherwise let
+            // a stale second click silently overwrite the already-applied change.
+            $upd = $pdo->prepare(
+                'UPDATE appointments SET date = ?, time = ?, reschedule_note = ?, reschedule_request = NULL
+                 WHERE id = ? AND reschedule_request IS NOT NULL'
+            );
+            $upd->execute([$newDate, $newTime, $note ?: null, $id]);
+            if ($upd->rowCount() === 0) {
+                jsonResponse(['success' => false, 'message' => 'This reschedule request was already handled.']);
+            }
+        } else {
+            $pdo->prepare(
+                'UPDATE appointments SET date = ?, time = ?, reschedule_note = ?, reschedule_request = NULL WHERE id = ?'
+            )->execute([$newDate, $newTime, $note ?: null, $id]);
+        }
 
         // Notify patient of reschedule
         if ($patientUid = $getPatientUserId()) {

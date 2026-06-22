@@ -1,0 +1,6 @@
+<!DOCTYPE html><html><body><script>
+fetch('api/auth/login.php', {
+  method: 'POST', headers: {'Content-Type':'application/json'},
+  body: JSON.stringify({email:'admin@canaoptical.com', password:'admin123'})
+}).then(r => r.json()).then(d => { document.title = 'login:' + d.success; });
+</script></body></html>

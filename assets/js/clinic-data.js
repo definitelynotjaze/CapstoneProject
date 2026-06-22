@@ -3,9 +3,6 @@
 //  Single-clinic data layer. Loaded as a plain script (non-module).
 // ================================================================
 
-// Clear any stale branch selection from localStorage
-localStorage.removeItem('selectedBranch');
-
 /**
  * Returns doctors filtered by available day, sourced from the live
  * `doctors` array (db.js) so it stays in sync with admin edits and the

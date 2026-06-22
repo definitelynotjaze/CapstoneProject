@@ -27,6 +27,7 @@ function icon(name, cls = 'icon') {
     clock:         '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
     printer:       '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
     download:      '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+    upload:        '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
     filter:        '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
     shield:        '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
     'chevron-down':'<polyline points="6 9 12 15 18 9"/>',
@@ -40,6 +41,7 @@ function icon(name, cls = 'icon') {
     'map-pin':     '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
     phone:         '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
     mail:          '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/>',
+    'mail-open':   '<path d="M21.2 8.4 12 14 2.8 8.4"/><path d="M3 7.5 11.1 3a2 2 0 0 1 1.8 0L21 7.5"/><path d="M3 7.5v11a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18.5v-11"/>',
     'refresh-cw':  '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
     award:         '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>',
     'x-circle':    '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
@@ -51,7 +53,8 @@ function icon(name, cls = 'icon') {
     clipboard:        '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>',
     package:          '<line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
     grid:             '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
-    hash:             '<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>'
+    hash:             '<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>',
+    'external-link':  '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>'
   }
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${cls}">${p[name] || ''}</svg>`
 }
@@ -70,7 +73,7 @@ window.handleRegister        = handleRegister
 window.showRegister          = showRegister
 window.showLogin             = showLogin
 window._charts               = { initAppointmentsChart, initPatientGrowthChart, initReportStatusChart, initReportMonthlyChart, updateAppointmentsChart, updatePatientGrowthChart, initAnalyticsDoughnut, initAnalyticsStacked, initGenderChart, initAgeChart, initDoctorUtilChart, updateAnalyticsCharts, initStaffOverviewChart, updateStaffOverviewChart }
-window._pages                = { pageAdminDashboard, pageAdminUsers, pageAppointments, pagePatientList, pagePatientView, pageQRScanner, pageSchedule, pageAdminReports, pageAdminSettings, pageActivityLog, pageStaffDashboard, pageStaffSettings, pageDoctorDashboard, pageDoctorAppointments, pageDoctorSchedule, pageDoctorSettings, pageExamination, pageExamRecords, pageNewExamination, pagePatientExamHistory, pagePatientDashboard, pagePatientAppts, pagePatientRecords, pagePatientQR, pagePatientPrescriptions, pagePatientNotifications, pagePatientSettings, pageComingSoon, pagePatientDoctorAvail, pageScanQR }
+window._pages                = { pageAdminDashboard, pageAdminUsers, pageAppointments, pagePatientList, pagePatientView, pageContactMessages, pageQRScanner, pageSchedule, pageAdminReports, pageAdminSettings, pageActivityLog, pageStaffDashboard, pageStaffSettings, pageDoctorDashboard, pageDoctorAppointments, pageDoctorSchedule, pageDoctorSettings, pageExamination, pageExamRecords, pageNewExamination, pagePatientExamHistory, pagePatientDashboard, pagePatientAppts, pagePatientRecords, pagePatientQR, pagePatientPrescriptions, pagePatientNotifications, pagePatientSettings, pageComingSoon, pagePatientDoctorAvail, pageScanQR }
 window.toggleNotifyDropdown  = toggleNotifyDropdown
 window.toggleUserDropdown    = toggleUserDropdown
 window.closeAllDropdowns     = closeAllDropdowns
@@ -580,16 +583,21 @@ async function disapproveAppt(id) {
 function rescheduleAppt(id) {
   const a = appointments.find(a => a.id === id)
   if (!a) return
+  const fulfillingRequest = !!a.rescheduleRequest
+  const defaultDate = a.rescheduleRequest?.preferredDate || a.date
   showModal(`
     <div class="modal-header">
       <div class="modal-title">Reschedule Appointment</div>
       <button class="modal-close" onclick="window.closeModal()">&times;</button>
     </div>
     <div class="modal-body">
+      ${fulfillingRequest ? `<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:.8rem;color:#9A3412">
+        Fulfilling the patient's reschedule request${a.rescheduleRequest.preferredDate ? ' — preferred date pre-filled below' : ''}.
+      </div>` : ''}
       <div class="form-group"><label class="form-label">Patient</label>
         <input class="form-input" value="${a.patientName}" disabled></div>
       <div class="form-group"><label class="form-label">New Date</label>
-        <input type="date" id="re-date" class="form-input" value="${a.date}"
+        <input type="date" id="re-date" class="form-input" value="${defaultDate}"
                min="${new Date().toISOString().split('T')[0]}"></div>
       <div class="form-group"><label class="form-label">New Time</label>
         <select id="re-time" class="form-select">
@@ -601,18 +609,27 @@ function rescheduleAppt(id) {
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="window.closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="window.doReschedule('${id}')">Confirm Reschedule</button>
+      <button class="btn-primary" onclick="window.doReschedule('${id}',${fulfillingRequest})">Confirm Reschedule</button>
     </div>`)
 }
 
-async function doReschedule(id) {
+async function doReschedule(id, fulfillRequest = false) {
   const a    = appointments.find(a => a.id === id)
   if (!a) return
   const date = document.getElementById('re-date').value
   const time = document.getElementById('re-time').value
   const note = (document.getElementById('re-note')?.value || '').trim()
-  const ok   = await _apptUpdate({ id, action: 'reschedule', date, time, rescheduleNote: note })
-  if (!ok) return
+  const ok   = await _apptUpdate({ id, action: 'reschedule', date, time, rescheduleNote: note, fulfillRequest })
+  if (!ok) {
+    // The request may have already been accepted from another session/tab —
+    // re-sync so the stale "Accept & Reschedule" UI clears instead of being
+    // clickable again and silently re-applying outdated date/time.
+    if (fulfillRequest) {
+      closeModal()
+      if (window._syncAppointments) window._syncAppointments()
+    }
+    return
+  }
   a.date = date
   a.time = time
   if (note) a.rescheduleNote = note
@@ -1009,6 +1026,9 @@ async function saveUserProfile() {
         if (entry) { entry.firstName = fn; entry.lastName = ln; entry.name = fullName; entry.contact = phone; if (email) entry.email = email }
       } else if (role === 'staff') {
         const entry = staff.find(s => s.id === state.user?.id)
+        if (entry) { entry.firstName = fn; entry.lastName = ln; entry.name = fullName; entry.contact = phone; if (email) entry.email = email }
+      } else if (role === 'admin') {
+        const entry = admins.find(a => a.id === state.user?.id)
         if (entry) { entry.firstName = fn; entry.lastName = ln; entry.name = fullName; entry.contact = phone; if (email) entry.email = email }
       }
 
@@ -1479,7 +1499,9 @@ function amcRender() {
     const isSel     = dateStr === _wiz.selectedDate
     const isHoliday = !!phHolidays[dateStr]
     const holidayName = phHolidays[dateStr] || ''
-    const isDisabled = isPast || isToday || isHoliday
+    const daysOut   = Math.round((new Date(year, month, d) - new Date(todayY, todayM, todayD)) / 86400000)
+    const tooSoon   = daysOut < minAdvanceDays()
+    const isDisabled = isPast || tooSoon || isHoliday
     // If doctor prefilled, restrict to their available days; otherwise allow Mon–Sat
     const prefillDays = _wiz._prefillDays || []
     const hasPrefill  = prefillDays.length > 0
@@ -1493,7 +1515,7 @@ function amcRender() {
     if (isFar)                                            cls += ' amc-far'
     const clickable = !isDisabled && !isFar && docAvail && !isSun
     const onclick   = clickable ? `onclick="window.amcSelectDate('${dateStr}','${dayNames[dow]}')"` : ''
-    const tooltip   = isToday   ? `title="Same-day appointments are not available."` :
+    const tooltip   = (tooSoon && !isPast) ? `title="${minAdvanceTooltip()}"` :
                       isHoliday ? `title="Clinic closed: ${holidayName}"` : ''
     const inner     = isHoliday && !isPast
       ? `${d}<span class="amc-holiday-lbl">${holidayName}</span>`
@@ -2326,13 +2348,22 @@ function openEditPatientModal(patientId) {
         <div class="form-group"><label class="form-label">Last Name</label>
           <input id="ep-last" class="form-input" value="${p.lastName}"></div>
       </div>
+      <div class="form-row-2">
+        <div class="form-group"><label class="form-label">Date of Birth</label>
+          <input type="date" id="ep-dob" class="form-input" value="${p.dob || ''}"></div>
+        <div class="form-group"><label class="form-label">Gender</label>
+          <select id="ep-gender" class="form-select">
+            ${['Male','Female','Other'].map(g=>`<option${g===p.gender?' selected':''}>${g}</option>`).join('')}
+          </select></div>
+      </div>
       <div class="form-group"><label class="form-label">Contact</label>
         <input id="ep-contact" class="form-input" value="${p.contact}"></div>
       <div class="form-group"><label class="form-label">Email</label>
-        <input type="email" id="ep-email" class="form-input" value="${p.email}"></div>
+        <input type="email" id="ep-email" class="form-input" value="${p.email}"
+               ${!p.email ? 'disabled title="This patient has no login account — email can\'t be set here."' : ''}></div>
       <div class="form-group"><label class="form-label">Address</label>
         <input id="ep-address" class="form-input" value="${p.address}"></div>
-      <div class="form-group"><label class="form-label">Blood Type</label>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Blood Type</label>
         <select id="ep-blood" class="form-select">
           ${['Unknown','A+','A-','B+','B-','AB+','AB-','O+','O-'].map(b=>`<option${b===p.bloodType?' selected':''}>${b}</option>`).join('')}
         </select></div>
@@ -2343,17 +2374,44 @@ function openEditPatientModal(patientId) {
     </div>`)
 }
 
-function doEditPatient(patientId) {
+async function doEditPatient(patientId) {
   const p  = patients.find(p => p.id === patientId)
   const gv = id => (document.getElementById(id)||{}).value?.trim() || ''
   if (!p) return
-  p.firstName = gv('ep-first') || p.firstName
-  p.lastName  = gv('ep-last')  || p.lastName
-  p.name      = `${p.firstName} ${p.lastName}`
-  p.contact   = gv('ep-contact') || p.contact
-  p.email     = gv('ep-email')   || p.email
-  p.address   = gv('ep-address') || p.address
-  p.bloodType = gv('ep-blood')   || p.bloodType
+
+  const firstName = gv('ep-first')
+  const lastName  = gv('ep-last')
+  if (!firstName || !lastName) { toast('First and last name are required.', 'error'); return }
+
+  const payload = {
+    id: patientId, firstName, lastName,
+    gender: gv('ep-gender'), dob: gv('ep-dob'),
+    contact: gv('ep-contact'), email: gv('ep-email'),
+    address: gv('ep-address'), bloodType: gv('ep-blood')
+  }
+
+  try {
+    const r = await fetch('api/patients/admin_update.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    const d = await r.json()
+    if (!d.success) { toast(d.message || 'Could not update patient.', 'error'); return }
+  } catch (_) {
+    toast('Network error — could not update patient.', 'error')
+    return
+  }
+
+  p.firstName = firstName
+  p.lastName  = lastName
+  p.name      = `${firstName} ${lastName}`
+  if (payload.gender) p.gender = payload.gender
+  if (payload.dob)    p.dob    = payload.dob
+  p.contact   = payload.contact
+  if (payload.email && p.email) p.email = payload.email
+  p.address   = payload.address
+  p.bloodType = payload.bloodType
+
   closeModal(); toast('Patient info updated.'); renderPage()
 }
 
@@ -2445,6 +2503,259 @@ window.confirmArchivePatient = confirmArchivePatient
 window.doArchivePatient      = doArchivePatient
 
 // ════════════════════════════════════════════════════════════════
+//  CONTACT MESSAGES — view / read state / delete
+// ════════════════════════════════════════════════════════════════
+function openContactMessageModal(id) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+
+  // Mutate (and persist) the read state BEFORE building the modal markup —
+  // otherwise the toggle button below renders against the pre-open state
+  // and ends up showing "Mark as read" right after the message was already
+  // silently marked read, so clicking it actually marks it unread instead.
+  if (!m.isRead) _setContactMessageRead(id, true, true)
+
+  const dt = new Date(m.createdAt)
+  const fullDate = isNaN(dt) ? m.createdAt : dt.toLocaleString('en-PH', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+
+  const replyHtml = m.reply ? (() => {
+    const rdt = new Date(m.repliedAt)
+    const rDate = isNaN(rdt) ? m.repliedAt : rdt.toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+    return `
+      <div style="margin-top:14px">
+        <p style="margin:0 0 6px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#9CA3AF">
+          Replied by ${m.repliedBy || 'Clinic Staff'} &bull; ${rDate}
+        </p>
+        <div style="background:#FFF8F0;border:1.5px solid #FFD9A8;border-radius:10px;padding:16px;font-size:.88rem;color:#1C1C1C;line-height:1.6;white-space:pre-wrap">${m.reply}</div>
+      </div>`
+  })() : ''
+
+  showModal(`
+    <div class="modal-header">
+      <div class="modal-title" style="display:flex;align-items:center;gap:10px">
+        ${avatar(m.name, 'patient-avatar')}
+        <div>
+          <div>${m.name}</div>
+          <div style="font-size:.72rem;font-weight:500;color:#9CA3AF">${m.email}</div>
+        </div>
+      </div>
+      <button class="modal-close" onclick="window.closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;font-size:.78rem;color:#6B7280">
+        ${m.service ? `<span><strong style="color:#374151">Service:</strong> ${m.service}</span>` : ''}
+        <span><strong style="color:#374151">Received:</strong> ${fullDate}</span>
+      </div>
+      <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;padding:16px;font-size:.88rem;color:#374151;line-height:1.6;white-space:pre-wrap">${m.message}</div>
+      ${replyHtml}
+    </div>
+    <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:8px">
+        <button type="button" class="btn-ghost" style="display:inline-flex;align-items:center;gap:6px"
+                onclick="window.toggleContactMessageRead(${m.id})">
+          ${icon(m.isRead ? 'mail-open' : 'check-circle', 'icon-sm')} ${m.isRead ? 'Mark as Unread' : 'Mark as Read'}
+        </button>
+        <button type="button" class="btn-ghost" style="display:inline-flex;align-items:center;gap:6px"
+                onclick="window.toggleContactMessageArchive(${m.id})">
+          ${icon('archive', 'icon-sm')} ${m.archivedAt ? 'Unarchive' : 'Archive'}
+        </button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-secondary" onclick="window.closeModal()">Close</button>
+        <button class="btn-primary" onclick="window.openContactReplyModal(${m.id})">
+          ${icon('mail', 'icon-sm')} ${m.reply ? 'Edit Reply' : 'Reply'}
+        </button>
+      </div>
+    </div>`)
+}
+window.openContactMessageModal = openContactMessageModal
+
+async function _setContactMessageRead(id, read, rerender = true) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+  m.isRead = read
+  window._contactUnreadCount = contactMessages.filter(x => !x.isRead).length
+  if (window._updateSidebarBadges) window._updateSidebarBadges()
+  if (rerender) renderPage()
+  try {
+    await fetch('api/contact/mark_read.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, read })
+    })
+  } catch (_) { /* local state already updated; will reconcile on next sync */ }
+}
+
+function toggleContactMessageRead(id) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+  const newRead = !m.isRead
+  _setContactMessageRead(id, newRead, true)
+  if (newRead) {
+    // Rebuild the modal in place so the toggle button reflects the new state
+    openContactMessageModal(id)
+  } else {
+    // Marking unread while viewing is a bit contradictory — return to the inbox
+    closeModal()
+  }
+}
+window.toggleContactMessageRead = toggleContactMessageRead
+
+// ── Archive ──────────────────────────────────────────────────────
+async function toggleContactMessageArchive(id) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+  const archive = !m.archivedAt
+  m.archivedAt = archive ? new Date().toISOString() : null
+  closeModal()
+  renderPage()
+  try {
+    await fetch('api/contact/archive.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, archived: archive })
+    })
+    toast(archive ? 'Message archived.' : 'Message moved back to inbox.', 'success')
+  } catch (_) {
+    toast('Network error — change may not have saved.', 'error')
+  }
+}
+window.toggleContactMessageArchive = toggleContactMessageArchive
+
+// ── Reply ────────────────────────────────────────────────────────
+function openContactReplyModal(id) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+
+  showModal(`
+    <div class="modal-header">
+      <div class="modal-title">Reply to ${m.name}</div>
+      <button class="modal-close" onclick="window.closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin:0 0 10px;font-size:.78rem;color:#9CA3AF">Sent to <strong style="color:#374151">${m.email}</strong> by email.</p>
+      <div style="border-left:3px solid #e5e7eb;padding:2px 0 2px 14px;margin-bottom:14px;font-size:.8rem;color:#6B7280;line-height:1.55;max-height:90px;overflow:auto">${m.message}</div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">Your Reply <span class="req">*</span></label>
+        <textarea id="cr-reply-text" class="form-textarea" style="border-radius:8px;min-height:120px"
+                  placeholder="Type your reply…">${m.reply || ''}</textarea>
+      </div>
+      <div id="cr-reply-error" style="display:none;color:#DC2626;font-size:.78rem;margin-top:6px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="window.openContactMessageModal(${id})">Back</button>
+      <button id="cr-send-btn" class="btn-primary" onclick="window.sendContactReply(${id})">
+        ${icon('mail', 'icon-sm')} Send Reply
+      </button>
+    </div>`)
+
+  setTimeout(() => { document.getElementById('cr-reply-text')?.focus() }, 50)
+}
+window.openContactReplyModal = openContactReplyModal
+
+async function sendContactReply(id) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+
+  const ta       = document.getElementById('cr-reply-text')
+  const errBox   = document.getElementById('cr-reply-error')
+  const sendBtn  = document.getElementById('cr-send-btn')
+  const replyTxt = (ta?.value || '').trim()
+
+  if (!replyTxt) {
+    if (errBox) { errBox.textContent = 'Please write a reply before sending.'; errBox.style.display = 'block' }
+    return
+  }
+
+  sendBtn.disabled = true
+  sendBtn.innerHTML = `${icon('refresh-cw', 'icon-sm')} Sending…`
+
+  try {
+    const r = await fetch('api/contact/reply.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, reply: replyTxt })
+    })
+    const d = await r.json()
+    if (!d.success) {
+      sendBtn.disabled = false
+      sendBtn.innerHTML = `${icon('mail', 'icon-sm')} Send Reply`
+      if (errBox) { errBox.textContent = d.message || 'Failed to send reply.'; errBox.style.display = 'block' }
+      return
+    }
+    m.reply     = replyTxt
+    m.repliedAt = new Date().toISOString()
+    m.repliedBy = state.user?.name || 'Clinic Staff'
+    toast(d.emailSent ? 'Reply sent and emailed to the sender.' : 'Reply saved (email could not be sent).', 'success')
+    openContactMessageModal(id)
+    renderPage()
+  } catch (_) {
+    sendBtn.disabled = false
+    sendBtn.innerHTML = `${icon('mail', 'icon-sm')} Send Reply`
+    if (errBox) { errBox.textContent = 'Network error. Please try again.'; errBox.style.display = 'block' }
+  }
+}
+window.sendContactReply = sendContactReply
+
+async function markAllContactRead() {
+  contactMessages.forEach(m => { m.isRead = true })
+  window._contactUnreadCount = 0
+  if (window._updateSidebarBadges) window._updateSidebarBadges()
+  renderPage()
+  try {
+    await fetch('api/contact/mark_read.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ all: true })
+    })
+  } catch (_) {}
+}
+window.markAllContactRead = markAllContactRead
+
+function confirmDeleteContactMessage(id) {
+  const m = contactMessages.find(m => m.id === id)
+  if (!m) return
+  showModal(`
+    <div class="modal-header">
+      <div class="modal-title" style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#DC2626">
+          ${icon('trash-2','icon-sm')}
+        </div>
+        Delete Message
+      </div>
+      <button class="modal-close" onclick="window.closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.88rem;color:#374151">Delete the message from <strong>${m.name}</strong>? This cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="window.closeModal()">Cancel</button>
+      <button style="background:#DC2626;color:white;border:none;border-radius:8px;padding:9px 20px;font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px"
+              onclick="window.doDeleteContactMessage(${id})">
+        ${icon('trash-2','icon-sm')}<span>Delete</span>
+      </button>
+    </div>`)
+}
+window.confirmDeleteContactMessage = confirmDeleteContactMessage
+
+async function doDeleteContactMessage(id) {
+  const idx = contactMessages.findIndex(m => m.id === id)
+  if (idx === -1) return
+  try {
+    const r = await fetch('api/contact/delete.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    })
+    const d = await r.json()
+    if (!d.success) { toast(d.message || 'Failed to delete message.', 'error'); return }
+  } catch (_) { toast('Network error — message not deleted.', 'error'); return }
+
+  contactMessages.splice(idx, 1)
+  window._contactUnreadCount = contactMessages.filter(m => !m.isRead).length
+  if (window._updateSidebarBadges) window._updateSidebarBadges()
+  closeModal()
+  toast('Message deleted.', 'success')
+  renderPage()
+}
+window.doDeleteContactMessage = doDeleteContactMessage
+
+// ════════════════════════════════════════════════════════════════
 //  ARCHIVES — RESTORE + PERMANENT DELETE
 // ════════════════════════════════════════════════════════════════
 function confirmRestore(id, name) {
@@ -2495,9 +2806,14 @@ async function doRestore(id, name) {
       if (!appointments.find(a => a.id === d.id)) appointments.push(d)
     } else if (rec.type === 'Service') {
       if (!CLINIC_SERVICES.find(s => s.id === d.id)) {
-        CLINIC_SERVICES.push(d)
-        _svcNextId = Math.max(_svcNextId, d.id + 1)
-        _persistServices()
+        try {
+          const r = await fetch('api/services/update.php', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: d.id, status: 'active' })
+          })
+          const sd = await r.json()
+          if (sd.success) CLINIC_SERVICES.push(sd.service)
+        } catch (_) {}
       }
     }
   }
@@ -2678,7 +2994,10 @@ function saveClinicInfo() {
   clinicInfo.email   = email
   clinicInfo.hours   = hours
 
-  try { localStorage.setItem('opticana_clinicInfo', JSON.stringify(clinicInfo)) } catch(e) {}
+  fetch('api/clinic/settings.php', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, phone, address, email, hours })
+  }).catch(() => {})
 
   addActivityLog({ id: 'L' + Date.now(), user: state.user.name, role: state.role,
     action: 'Updated clinic information',
@@ -2699,7 +3018,15 @@ function saveSchedulingRules() {
   consultationSettings.minAdvanceBooking        = gv('cs-adv-min')   || consultationSettings.minAdvanceBooking
   consultationSettings.maxApptsPerDoctorPerDay  = parseInt(gv('cs-max-appt')) || consultationSettings.maxApptsPerDoctorPerDay
 
-  try { localStorage.setItem('opticana_consultationSettings', JSON.stringify(consultationSettings)) } catch(e) {}
+  fetch('api/clinic/settings.php', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      defaultDuration: consultationSettings.defaultDuration,
+      maxAdvanceBooking: consultationSettings.maxAdvanceBooking,
+      minAdvanceBooking: consultationSettings.minAdvanceBooking,
+      maxApptsPerDoctorPerDay: consultationSettings.maxApptsPerDoctorPerDay
+    })
+  }).catch(() => {})
 
   addActivityLog({ id: 'L' + Date.now(), user: state.user.name, role: state.role,
     action: 'Updated scheduling rules',
@@ -2718,7 +3045,17 @@ function saveOperatingHours() {
 
   consultationSettings.clinicDays = Array.from(document.querySelectorAll('.cs-clinic-day')).filter(cb => cb.checked).map(cb => cb.value)
 
-  try { localStorage.setItem('opticana_consultationSettings', JSON.stringify(consultationSettings)) } catch(e) {}
+  fetch('api/clinic/settings.php', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      morningStart: consultationSettings.morningStart,
+      morningEnd: consultationSettings.morningEnd,
+      afternoonStart: consultationSettings.afternoonStart,
+      afternoonEnd: consultationSettings.afternoonEnd,
+      lunchBreak: consultationSettings.lunchBreak,
+      clinicDays: consultationSettings.clinicDays
+    })
+  }).catch(() => {})
 
   addActivityLog({ id: 'L' + Date.now(), user: state.user.name, role: state.role,
     action: `Updated operating hours: ${consultationSettings.morningStart}–${consultationSettings.afternoonEnd}`,
@@ -2762,21 +3099,24 @@ function _rebuildServicesTable() {
   if (window.initPagination) window.initPagination('services-tbody')
 }
 
-function _persistServices() {
-  try {
-    localStorage.setItem('opticana_clinicServices', JSON.stringify(CLINIC_SERVICES))
-    localStorage.setItem('opticana_svcNextId', String(_svcNextId))
-  } catch(e) {}
-}
-
-function addService() {
+async function addService() {
   const name     = (document.getElementById('svc-name')?.value     || '').trim()
   const desc     = (document.getElementById('svc-desc')?.value     || '').trim()
   const duration = parseInt(document.getElementById('svc-duration')?.value || '30', 10)
   const status   = document.getElementById('svc-status')?.value    || 'active'
   if (!name) { toast('Service name is required.', 'error'); return }
-  CLINIC_SERVICES.push({ id: _svcNextId++, name, description: desc, duration, status, icon: 'eye' })
-  _persistServices()
+  try {
+    const r = await fetch('api/services/create.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, description: desc, duration, status, icon: 'eye' })
+    })
+    const d = await r.json()
+    if (!d.success) { toast(d.message || 'Could not add service.', 'error'); return }
+    CLINIC_SERVICES.push(d.service)
+  } catch (_) {
+    toast('Network error — could not add service.', 'error')
+    return
+  }
   document.getElementById('svc-name').value     = ''
   document.getElementById('svc-desc').value     = ''
   document.getElementById('svc-duration').value = '30'
@@ -2825,16 +3165,26 @@ function editServiceModal(id) {
 }
 window.editServiceModal = editServiceModal
 
-window.doEditService = function(id) {
+window.doEditService = async function(id) {
   const svc = CLINIC_SERVICES.find(s => s.id === id)
   if (!svc) return
   const name = (document.getElementById('es-name')?.value || '').trim()
   if (!name) { toast('Service name is required.', 'error'); return }
-  svc.name        = name
-  svc.description = (document.getElementById('es-desc')?.value     || '').trim()
-  svc.duration    = parseInt(document.getElementById('es-duration')?.value || svc.duration, 10)
-  svc.status      = document.getElementById('es-status')?.value    || svc.status
-  _persistServices()
+  const description = (document.getElementById('es-desc')?.value     || '').trim()
+  const duration     = parseInt(document.getElementById('es-duration')?.value || svc.duration, 10)
+  const status       = document.getElementById('es-status')?.value    || svc.status
+  try {
+    const r = await fetch('api/services/update.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, name, description, duration, status })
+    })
+    const d = await r.json()
+    if (!d.success) { toast(d.message || 'Could not update service.', 'error'); return }
+    Object.assign(svc, d.service)
+  } catch (_) {
+    toast('Network error — could not update service.', 'error')
+    return
+  }
   closeModal()
   _rebuildServicesTable()
   toast('Service updated successfully.', 'success')
@@ -2863,14 +3213,24 @@ function archiveServiceConfirm(id, name) {
 }
 window.archiveServiceConfirm = archiveServiceConfirm
 
-window.doArchiveService = function(id) {
+window.doArchiveService = async function(id) {
   const reason = (document.getElementById('svc-archive-reason')?.value || '').trim()
   if (!reason) { toast('Please provide a reason.', 'error'); return }
   const idx = CLINIC_SERVICES.findIndex(s => s.id === id)
   if (idx === -1) return
   const svc = CLINIC_SERVICES[idx]
+  try {
+    const r = await fetch('api/services/update.php', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: 'inactive' })
+    })
+    const d = await r.json()
+    if (!d.success) { toast(d.message || 'Could not archive service.', 'error'); return }
+  } catch (_) {
+    toast('Network error — could not archive service.', 'error')
+    return
+  }
   CLINIC_SERVICES.splice(idx, 1)
-  _persistServices()
   addArchivedRecord({ id: 'AR' + Date.now(), type: 'Service', name: svc.name, refId: 'SVC' + svc.id,
     archivedBy: state.user.name, reason, date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
     data: { ...svc } })
@@ -3567,7 +3927,7 @@ function updateRxPreview(patientId) {
   el.innerHTML = `
     <!-- Clinic Header -->
     <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #e5e7eb">
-      <img src="brand_assests/cana logo.png" style="width:40px;height:40px;border-radius:50%;object-fit:contain;border:1px solid #e5e7eb;padding:2px;flex-shrink:0" onerror="this.style.display='none'">
+      <img src="${window._clinicLogoUrl || 'brand_assests/cana logo.png'}" style="width:40px;height:40px;border-radius:50%;object-fit:contain;border:1px solid #e5e7eb;padding:2px;flex-shrink:0" onerror="this.style.display='none'">
       <div>
         <div style="font-size:.9rem;font-weight:700;color:#1C1C1C;line-height:1.2">OPTICANA — Cana Optical Clinic</div>
         <div style="font-size:.68rem;color:#6B7280;margin-top:2px">Unit 3 Paseo de Carmona, Brgy. Maduya, Carmona, Cavite</div>
@@ -3985,7 +4345,7 @@ function generateClearance(patientId, examId) {
         <!-- LETTERHEAD -->
         <div style="border:1.5px solid #222;padding:18px 24px;margin-bottom:36px;text-align:center;">
           <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:10px;">
-            <img src="brand_assests/cana logo.png" alt="Cana Optical" style="height:64px;flex-shrink:0;">
+            <img src="${window._clinicLogoUrl || 'brand_assests/cana logo.png'}" alt="Cana Optical" style="height:64px;flex-shrink:0;">
             <div style="text-align:left;line-height:1;">
               <div style="font-family:Arial,sans-serif;font-size:2rem;font-weight:900;letter-spacing:.05em;color:#111;">CANA OPTICAL</div>
             </div>
@@ -4976,8 +5336,6 @@ function handlePhotoUpload(input, avatarId) {
           const entry = patients.find(pt => pt.id === state.user.id)
           if (entry) entry.photoUrl = d.photoUrl
         }
-        // Clean up any old localStorage entry for this user
-        try { localStorage.removeItem('opticana_photo_' + state.user.id) } catch (_) {}
       }
 
       // Swap the preview src to the permanent server path
@@ -4998,28 +5356,29 @@ window.handlePhotoUpload = handlePhotoUpload
 
 /**
  * handleLogoUpload — same idea but for the clinic logo preview in
- * the Admin › Appearance settings panel.
+ * the Admin › Appearance settings panel. Uploads to the server so the
+ * new logo persists and syncs everywhere (dashboard + public pages).
  */
-function handleLogoUpload(input, previewId) {
+async function handleLogoUpload(input, previewId) {
   const file = input.files[0]
   if (!file) return
 
-  if (file.size > 2 * 1024 * 1024) {
-    toast('File too large. Please choose an image under 2 MB.', 'error')
-    input.value = ''
-    return
-  }
+  const formData = new FormData()
+  formData.append('logo', file)
 
-  const reader = new FileReader()
-  reader.onload = e => {
-    const dataUrl = e.target.result
+  try {
+    const r = await fetch('api/clinic/upload_logo.php', { method: 'POST', body: formData })
+    const d = await r.json()
+    if (!d.success) { toast(d.message || 'Could not upload logo.', 'error'); return }
+    clinicInfo.logoUrl = d.logoUrl
+    window._clinicLogoUrl = d.logoUrl
     const el = document.getElementById(previewId)
-    if (el) { el.src = dataUrl; el.style.opacity = '1' }
-    window._clinicLogoUrl = dataUrl
+    if (el) { el.src = d.logoUrl; el.style.opacity = '1' }
     renderSidebar()
     toast('Logo updated.', 'success')
+  } catch (_) {
+    toast('Network error — could not upload logo.', 'error')
   }
-  reader.readAsDataURL(file)
 }
 window.handleLogoUpload = handleLogoUpload
 

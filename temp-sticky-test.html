@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
+<div id="app-shell" style="display:flex">
+<aside id="sidebar"><div id="sidebar-profile"></div><nav id="sidebar-nav"></nav><div id="sidebar-foot"></div></aside>
+<div id="main-area"><header class="topbar" id="topbar"><div id="topbar-crumb"></div><div id="topbar-right"></div></header><main id="main-content"></main></div>
+</div><div id="modal-root"></div>
+<link rel="stylesheet" href="assets/css/global.css">
+<script src="assets/js/clinic-data.js"></script>
+<script src="assets/js/analytics-data.js"></script>
+<script src="assets/js/db.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/pagination.js"></script>
+<script src="assets/js/sortable.js"></script>
+<script src="assets/js/router.js"></script>
+<script src="assets/js/pages.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+window.state.role = 'patient'
+window.state.user = patients[0]
+window.bootShell('patient', patients[0])
+window.navigate('patient-appts', { filter: 'history' })
+
+setTimeout(function() {
+  var mc = document.getElementById('main-content')
+  mc.scrollTop = 400
+  setTimeout(function() {
+    var tabs = document.querySelector('#main-content .filter-tabs')
+    var rect = tabs.getBoundingClientRect()
+    var out = document.createElement('div')
+    out.style.cssText = 'position:fixed;top:0;left:0;background:yellow;padding:8px;font-size:12px;z-index:999999'
+    out.textContent = 'After scrollTop=400: tabs.getBoundingClientRect().top = ' + rect.top + ' (should be ~58, the topbar height, if pinned correctly; would be negative/way off-screen if NOT sticky)'
+    document.body.prepend(out)
+  }, 200)
+}, 600)
+</script>
+</body></html>

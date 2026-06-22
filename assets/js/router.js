@@ -37,6 +37,7 @@ const SIDEBAR_CONFIG = {
         { key: 'add-patient',      label: 'Add Patient' }
       ]
     },
+    { key: 'contact-messages',     label: 'Contact Messages', icon: 'mail', badgeKey: '_contactUnreadCount' },
     { key: 'examination',          label: 'Optical Examination', icon: 'eye',
       children: [
         { key: 'exam-records',     label: 'Exam Records' }
@@ -54,6 +55,7 @@ const SIDEBAR_CONFIG = {
     { key: 'activity-log',         label: 'Activity Log',     icon: 'activity' },
     { key: 'admin-settings',       label: 'Settings',         icon: 'settings',
       children: [
+        { key: 'admin-settings', filter: 'profile',      label: 'My Profile' },
         { key: 'admin-settings', filter: 'clinic',       label: 'Clinic Information' },
         { key: 'admin-settings', filter: 'services',     label: 'Services' },
         { key: 'admin-settings', filter: 'consultation', label: 'Consultation Settings' },
@@ -81,6 +83,7 @@ const SIDEBAR_CONFIG = {
         { key: 'add-patient',      label: 'Add Patient' }
       ]
     },
+    { key: 'contact-messages',     label: 'Contact Messages', icon: 'mail', badgeKey: '_contactUnreadCount' },
     { key: 'schedule',             label: 'Doctor Schedule',  icon: 'clock' },
     { section: 'Account' },
     { key: 'staff-settings',       label: 'Settings',         icon: 'settings' }
@@ -138,6 +141,7 @@ const PAGE_LABELS = {
   'patient-list':          'Patient Records',
   'add-patient':           'Add Patient',
   'patient-view':          'Patient Profile',
+  'contact-messages':      'Contact Messages',
   'qr-scanner':            'QR Scanner',
   'schedule':              'Doctor Schedule',
   'admin-reports':         'Reports',
@@ -214,6 +218,7 @@ function renderPage() {
     'patient-list':          Pages.pagePatientList,
     'add-patient':           Pages.pageComingSoon,
     'patient-view':          Pages.pagePatientView,
+    'contact-messages':      Pages.pageContactMessages,
     'qr-scanner':            Pages.pageQRScanner,
     'schedule':              Pages.pageSchedule,
     'admin-reports':         Pages.pageAdminReports,
@@ -261,6 +266,7 @@ function renderPage() {
 function bootShell(role, user) {
   renderSidebar()
   renderTopbar()
+  applySidebarBucket(true)
 
   // Navigate to default page for role
   const defaults = {
@@ -321,25 +327,25 @@ function renderSidebar() {
           </div>
         </div>`
     } else {
+      const badgeCount = item.badgeKey ? (window[item.badgeKey] || 0) : 0
+      const badgeHtml  = badgeCount > 0 ? `<span class="nav-badge">${badgeCount > 99 ? '99+' : badgeCount}</span>` : ''
       nav += `
         <div class="nav-item${isActive ? ' active' : ''}" onclick="${clickAction}">
           ${window.icon(item.icon, 'icon')}
           <span class="nav-item-label">${item.label}</span>
+          ${badgeHtml}
         </div>`
     }
   })
 
   const isAdmin = role === 'admin'
-  const initials = isAdmin ? 'CO' : (user ? (user.firstName[0] + user.lastName[0]).toUpperCase() : '??')
-  const displayName = isAdmin ? (clinicInfo.name || 'Cana Optical Clinic') : (user?.name || 'User')
+  const initials = user ? (user.firstName[0] + user.lastName[0]).toUpperCase() : '??'
+  const displayName = user?.name || 'User'
   const roleBadgeMap = { admin: 'Administrator', staff: 'Staff', doctor: 'Doctor', patient: 'Patient' }
   const roleBadge = roleBadgeMap[role] || role
-  const logoSrc = window._clinicLogoUrl || 'brand_assests/cana logo.png'
-  const avatarHtml = isAdmin
-    ? `<div class="sidebar-avatar sidebar-profile-avatar" style="background:#FFF0DC;overflow:hidden;padding:4px"><img src="${logoSrc}" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%"></div>`
-    : user?.photoUrl
-      ? `<div class="sidebar-avatar sidebar-profile-avatar" style="overflow:hidden;padding:0;background:transparent"><img src="${user.photoUrl}" alt="Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"></div>`
-      : `<div class="sidebar-avatar sidebar-profile-avatar">${initials}</div>`
+  const avatarHtml = user?.photoUrl
+    ? `<div class="sidebar-avatar sidebar-profile-avatar" style="overflow:hidden;padding:0;background:transparent"><img src="${user.photoUrl}" alt="Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"></div>`
+    : `<div class="sidebar-avatar sidebar-profile-avatar">${initials}</div>`
 
   document.getElementById('sidebar-nav').innerHTML = nav
   document.getElementById('sidebar-profile').innerHTML = `
@@ -351,11 +357,22 @@ function renderSidebar() {
       </div>
     </div>`
   document.getElementById('sidebar-foot').innerHTML = `
+    <a class="sidebar-logout" href="index.html" style="text-decoration:none">
+      ${window.icon('external-link', 'icon')}
+      <span>View Website</span>
+    </a>
     <div class="sidebar-logout" onclick="window.logout()">
       ${window.icon('log-out', 'icon')}
       <span>Sign Out</span>
     </div>`
 }
+
+// Re-renders just to refresh badge counts (e.g. unread contact messages)
+// after a background sync — the sidebar is cheap to rebuild from state.
+function updateSidebarBadges() {
+  if (document.getElementById('sidebar-nav')) renderSidebar()
+}
+window._updateSidebarBadges = updateSidebarBadges
 
 // ── Highlight active sidebar item ───────────────────────────────
 function highlightSidebarActive() {
@@ -418,7 +435,7 @@ function renderTopbar() {
 
       <!-- Clinic identity -->
       <div class="topbar-clinic">
-        <img src="brand_assests/cana logo.png" alt="Cana Optical" class="topbar-clinic-img">
+        <img src="${window._clinicLogoUrl || 'brand_assests/cana logo.png'}" alt="Cana Optical" class="topbar-clinic-img">
         <div class="topbar-clinic-text">
           <span class="topbar-clinic-name">Cana Optical</span>
           <span class="topbar-clinic-sub">Carmona, Cavite</span>
@@ -440,8 +457,8 @@ function _notifTimeAgo(dateStr) {
 }
 window._notifTimeAgo = _notifTimeAgo
 
-const _NOTIF_ICON  = { approved:'check-circle', cancelled:'x-circle', disapproved:'x-circle', rescheduled:'calendar', new_appointment:'calendar', reschedule_request:'alert-circle', welcome:'star', info:'info' }
-const _NOTIF_COLOR = { approved:'green', cancelled:'red', disapproved:'red', rescheduled:'blue', new_appointment:'orange', reschedule_request:'orange', welcome:'purple', info:'gray' }
+const _NOTIF_ICON  = { approved:'check-circle', cancelled:'x-circle', disapproved:'x-circle', rescheduled:'calendar', new_appointment:'calendar', reschedule_request:'alert-circle', welcome:'star', info:'info', contact_message:'mail' }
+const _NOTIF_COLOR = { approved:'green', cancelled:'red', disapproved:'red', rescheduled:'blue', new_appointment:'orange', reschedule_request:'orange', welcome:'purple', info:'gray', contact_message:'orange' }
 
 function _notifNavTarget(type, role) {
   const apptPage = role === 'patient' ? 'patient-appts' : 'appointments'
@@ -461,6 +478,7 @@ function _notifNavTarget(type, role) {
     prescription:       role === 'patient' ? 'patient-prescriptions' : 'patient-list',
     welcome:            dashPage,
     info:               dashPage,
+    contact_message:    'contact-messages',
   }
   return map[type] || dashPage
 }
@@ -572,21 +590,59 @@ function closeMobileSidebar() {
 }
 window.closeMobileSidebar = closeMobileSidebar
 
-window.addEventListener('resize', () => {
-  if (window.innerWidth > 767) {
-    closeMobileSidebar()
+// ── Responsive default: pick a sidebar mode when the viewport crosses
+//    into a new size bucket, without fighting a manual toggle made by
+//    the user while they stay within the same bucket. ─────────────
+function _sidebarBucketFor(w) {
+  if (w <= 767)  return 'mobile'
+  if (w <= 1024) return 'tablet'
+  return 'desktop'
+}
+let _lastSidebarBucket = null
+function applySidebarBucket(force) {
+  const sidebar  = document.getElementById('sidebar')
+  const mainArea = document.getElementById('main-area')
+  if (!sidebar || !mainArea) return
+  const bucket = _sidebarBucketFor(window.innerWidth)
+  if (bucket === _lastSidebarBucket && !force) return
+  _lastSidebarBucket = bucket
+  closeMobileSidebar()
+  if (bucket === 'mobile') {
+    state.sidebarCollapsed = false
+    sidebar.classList.remove('collapsed')
+    mainArea.classList.remove('collapsed')
+  } else if (bucket === 'tablet') {
+    // Default to icon-rail mode on tablets/small laptops, but the user
+    // can still expand it — the hamburger keeps using the same toggle.
+    state.sidebarCollapsed = true
+    sidebar.classList.add('collapsed')
+    mainArea.classList.add('collapsed')
   } else {
-    // Strip desktop-collapse state when resizing into mobile view
-    document.getElementById('sidebar')?.classList.remove('collapsed')
-    document.getElementById('main-area')?.classList.remove('collapsed')
+    state.sidebarCollapsed = false
+    sidebar.classList.remove('collapsed')
+    mainArea.classList.remove('collapsed')
   }
-})
+}
+window.applySidebarBucket = applySidebarBucket
+
+window.addEventListener('resize', () => applySidebarBucket(false))
 
 // ── Dropdown open/close ─────────────────────────────────────────
 function toggleDropdown(id) {
   const menu  = document.getElementById(id)
   const arrow = document.getElementById('arrow-' + id)
   if (!menu) return
+  const sidebar = document.getElementById('sidebar')
+  // A collapsed icon-rail sidebar can't show a submenu in place — expand
+  // it first so the click actually leads somewhere instead of being a dead end.
+  if (sidebar && sidebar.classList.contains('collapsed') && window.innerWidth > 767) {
+    state.sidebarCollapsed = false
+    sidebar.classList.remove('collapsed')
+    document.getElementById('main-area')?.classList.remove('collapsed')
+    menu.classList.add('open')
+    if (arrow) arrow.classList.add('open')
+    return
+  }
   menu.classList.toggle('open')
   if (arrow) arrow.classList.toggle('open')
 }

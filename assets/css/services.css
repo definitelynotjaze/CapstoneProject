@@ -1,11 +1,21 @@
 /* ── Services page content ── */
+html, body { height: 100%; color: var(--text); background: var(--white); overflow: hidden; }
+#footer { position: fixed; bottom: 0; left: 0; right: 0; height: 45px; background: rgba(255,255,255,0.96); display: flex; align-items: center; justify-content: center; border-top: 1px solid rgba(229,231,235,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.footer-line { font-size: 0.72rem; color: #b0b7c3; white-space: nowrap; }
+
 #content { position: fixed; top: 70px; left: 0; right: 0; height: calc(100vh - 115px); display: flex; align-items: center; overflow: hidden; }
 .services-wrap { max-width: 1200px; margin: 0 auto; padding: 0 48px; width: 100%; }
 .section-header { margin-bottom: 20px; }
 .section-eyebrow { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; display: block; }
 .section-title { font-size: 1.4rem; font-weight: 700; color: var(--text); line-height: 1.2; letter-spacing: -0.02em; }
 
-.services-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+/* Gutters: --bs-gutter-x/y zeroed so Bootstrap's row-cols width math (which
+   sums to 100%) isn't paired with its own padding-based gutters too — we
+   create the actual 14px gap ourselves via padding on the wrapping .col,
+   which is a separate element from the bordered/padded .service-card so the
+   card's own padding can't override or interfere with it. */
+.services-grid { --bs-gutter-x: 0; --bs-gutter-y: 0; margin: -7px -7px 13px; }
+.services-grid > .col { padding: 7px; }
 .service-card { background: var(--white); border-radius: 10px; padding: 16px 20px; border: 1px solid var(--border); border-bottom: 2px solid transparent; transition: all 0.22s; position: relative; overflow: hidden; }
 .service-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(232,137,28,0.04) 0%,transparent 60%); opacity: 0; transition: opacity 0.22s; }
 .service-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-bottom-color: var(--orange); border-color: rgba(232,137,28,0.15); }
@@ -20,3 +30,15 @@
 .services-cta { text-align: center; }
 .cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 28px; background: var(--orange); color: #fff; font-size: 0.88rem; font-weight: 600; border-radius: 8px; border: 2px solid var(--orange); transition: all 0.25s; box-shadow: 0 4px 14px rgba(232,137,28,0.28); cursor: pointer; }
 .cta-btn:hover { background: var(--orange-dk); border-color: var(--orange-dk); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,137,28,0.38); }
+.cta-btn:focus-visible { outline: 2px solid var(--orange-dk); outline-offset: 2px; }
+
+@media (max-width: 991.98px) {
+  html, body { height: auto; overflow: visible; }
+  #footer { position: static; height: auto; padding: 16px 24px; }
+  #content { position: static; top: auto; height: auto; overflow: visible; padding: 94px 0 32px; }
+  .services-wrap { padding: 0 24px; }
+}
+@media (max-width: 480px) {
+  .services-wrap { padding: 0 18px; }
+  .section-title { font-size: 1.2rem; }
+}

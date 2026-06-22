@@ -1,59 +1,89 @@
 /* ── Landing page: transparent-to-white navbar + hero + about ── */
+/* Base navbar structure/collapse comes from navbar.css; this file layers the
+   transparent-over-hero look on top, plus the hero/about/footer sections. */
 html { scroll-behavior: smooth; }
 body { overflow-x: hidden; }
 
 /* Transparent navbar that becomes white on scroll */
-#navbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: 70px;
-  display: flex; align-items: center;
-  background: transparent;
-  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  border-bottom: 1px solid transparent;
-}
+#navbar { background: transparent; border-bottom-color: transparent; box-shadow: none; }
 #navbar.scrolled {
   background: rgba(255,255,255,0.97);
   box-shadow: 0 1px 12px rgba(0,0,0,0.08);
   border-bottom-color: rgba(229,231,235,0.7);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
-.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; width: 100%; display: flex; align-items: center; justify-content: space-between; }
-.nav-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.nav-logo img { height: 34px; width: 34px; object-fit: contain; }
-.nav-logo-name { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1; letter-spacing: -0.01em; transition: color 0.3s ease; }
-.nav-logo-sub  { font-size: 0.58rem; font-weight: 500; color: rgba(255,255,255,0.65); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px; transition: color 0.3s ease; }
+.nav-logo-name { color: #fff; }
+.nav-logo-sub  { color: rgba(255,255,255,0.65); }
 #navbar.scrolled .nav-logo-name { color: var(--orange); }
 #navbar.scrolled .nav-logo-sub  { color: var(--muted); }
 
-.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
-.nav-links a { padding: 6px 12px; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.85); transition: color 0.25s ease; white-space: nowrap; }
-.nav-links a:hover { color: #fff; }
-.nav-links a.active { color: #fff; font-weight: 600; }
-#navbar.scrolled .nav-links a { color: var(--orange); }
-#navbar.scrolled .nav-links a:hover { color: var(--orange-dk); }
-#navbar.scrolled .nav-links a.active { color: var(--orange); font-weight: 600; }
+.nav-links .nav-link { color: rgba(255,255,255,0.85); }
+.nav-links .nav-link:hover { color: #fff; }
+.nav-links .nav-link.active { color: #fff; font-weight: 600; }
+#navbar.scrolled .nav-links .nav-link { color: var(--orange); }
+#navbar.scrolled .nav-links .nav-link:hover { color: var(--orange-dk); }
+#navbar.scrolled .nav-links .nav-link.active { color: var(--orange); font-weight: 600; }
 
-.nav-actions { display: flex; align-items: center; gap: 10px; }
-.nav-login { font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.85); padding: 6px 12px; transition: color 0.25s ease; }
-.nav-login:hover { color: #fff; }
-#navbar.scrolled .nav-login { color: var(--orange); }
-#navbar.scrolled .nav-login:hover { color: var(--orange-dk); }
-.nav-book { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; background: var(--orange); color: #fff; font-size: 0.85rem; font-weight: 600; border-radius: 999px; transition: background 0.25s ease, transform 0.25s ease; }
-.nav-book:hover { background: var(--orange-dk); transform: translateY(-1px); }
+.nav-actions .nav-login { color: rgba(255,255,255,0.85); }
+.nav-actions .nav-login:hover { color: #fff; }
+#navbar.scrolled .nav-actions .nav-login { color: var(--orange); }
+#navbar.scrolled .nav-actions .nav-login:hover { color: var(--orange-dk); }
+
+/* Profile dropdown trigger needs the same transparent-to-white treatment
+   as the rest of the nav — it defaults to muted-gray text/icon which would
+   be unreadable over the hero photo before the page is scrolled. */
+.nav-profile-name, .nav-profile-chevron { color: rgba(255,255,255,0.85); }
+.nav-profile-btn:hover { background: rgba(255,255,255,0.14); }
+#navbar.scrolled .nav-profile-name, #navbar.scrolled .nav-profile-chevron { color: var(--muted); }
+#navbar.scrolled .nav-profile-btn:hover { background: rgba(127,127,127,0.1); }
+
+.nav-toggle span { background: #fff; }
+#navbar.scrolled .nav-toggle span { background: var(--orange); }
+
+/* On mobile the dropdown panel stays a solid dark glass surface regardless
+   of scroll state, since it overlays the hero image either way. */
+@media (max-width: 991.98px) {
+  .navbar-collapse.show {
+    background: rgba(15,15,20,0.97);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+    margin: 0 -48px; padding-left: 48px; padding-right: 48px; padding-bottom: 12px;
+  }
+  .nav-links .nav-link, .nav-actions .nav-login { color: rgba(255,255,255,0.85); }
+  .nav-links .nav-link:hover, .nav-actions .nav-login:hover { color: #fff; }
+  .nav-links .nav-link.active,
+  #navbar.scrolled .nav-links .nav-link,
+  #navbar.scrolled .nav-links .nav-link:hover,
+  #navbar.scrolled .nav-actions .nav-login,
+  #navbar.scrolled .nav-actions .nav-login:hover { color: rgba(255,255,255,0.85); }
+  #navbar.scrolled .nav-links .nav-link.active,
+  .nav-links .nav-link.active { color: var(--orange); background: rgba(232,137,28,0.16); }
+  .nav-link-login .nav-link,
+  .nav-link-account { border-top-color: rgba(255,255,255,0.12); }
+  .nav-mobile-account-name { color: rgba(255,255,255,0.92); }
+  .nav-toggle span, #navbar.scrolled .nav-toggle span { background: #fff; }
+  #navbar.scrolled .nav-toggle[aria-expanded="false"] span { background: var(--orange); }
+}
+@media (max-width: 768px) {
+  .navbar-collapse.show { margin: 0 -20px; padding-left: 20px; padding-right: 20px; }
+}
 
 /* Hero */
 #hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .hero-bg { position: absolute; inset: -12px; background-size: cover; background-position: right center; background-repeat: no-repeat; filter: blur(3px); z-index: 0; }
 #hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,15,20,0.72) 0%, rgba(15,15,20,0.62) 40%, rgba(15,15,20,0.78) 100%); z-index: 1; }
-.hero-inner { position: relative; z-index: 2; text-align: center; max-width: 700px; padding: 0 24px; }
-.hero-tagline { font-size: 0.88rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--orange); margin-bottom: 20px; }
-.hero-heading { font-size: 3.6rem; font-weight: 700; line-height: 1.15; color: #ffffff; letter-spacing: -0.02em; margin-bottom: 22px; }
+.hero-inner { position: relative; z-index: 2; text-align: center; max-width: 700px; width: 100%; min-width: 0; padding: 0 24px; box-sizing: border-box; }
+.hero-tagline { font-size: clamp(0.74rem, 0.65rem + 0.4vw, 0.88rem); font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--orange); margin-bottom: 20px; }
+.hero-heading { font-size: clamp(2rem, 1.3rem + 3vw, 3.6rem); font-weight: 700; line-height: 1.15; color: #ffffff; letter-spacing: -0.02em; margin-bottom: 22px; }
 .hero-heading .orange { color: var(--orange); }
-.hero-sub { font-size: 1.05rem; color: rgba(255,255,255,0.8); line-height: 1.7; max-width: 580px; margin: 0 auto 32px auto; }
+.hero-sub { font-size: clamp(0.85rem, 0.78rem + 0.35vw, 1.05rem); color: rgba(255,255,255,0.8); line-height: 1.7; max-width: 580px; margin: 0 auto 32px auto; }
 .hero-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 .btn-solid { display: inline-flex; align-items: center; gap: 7px; padding: 13px 28px; background: var(--orange); color: #fff; font-size: 0.88rem; font-weight: 600; font-family: 'Poppins', sans-serif; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap; transition: background 0.25s ease, transform 0.25s ease; }
 .btn-solid:hover { background: var(--orange-dk); transform: translateY(-2px); }
+.btn-solid:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .btn-outline { display: inline-flex; align-items: center; gap: 7px; padding: 13px 28px; background: transparent; color: #fff; font-size: 0.88rem; font-weight: 500; font-family: 'Poppins', sans-serif; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.5); cursor: pointer; white-space: nowrap; transition: border-color 0.25s ease, background 0.25s ease; }
 .btn-outline:hover { border-color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.08); }
+.btn-outline:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
 /* Scroll indicator */
 .scroll-indicator { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.45); cursor: pointer; text-decoration: none; transition: color 0.2s ease; }
@@ -63,7 +93,7 @@ body { overflow-x: hidden; }
 
 /* About */
 #about { background: #ffffff; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 80px 48px; border-top: 1px solid var(--border); box-sizing: border-box; }
-.about-inner { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: center; max-width: 1000px; margin: 0 auto; width: 100%; }
+.about-inner { --bs-gutter-x: 40px; max-width: 1000px; margin: 0 auto; width: 100%; }
 .about-img-wrap { position: relative; }
 .about-img-main { border-radius: 12px; overflow: hidden; width: 100%; height: 340px; }
 .about-img-main img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
@@ -80,8 +110,9 @@ body { overflow-x: hidden; }
 .about-cta { margin-top: 20px; }
 .about-cta-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; border: 1.5px solid var(--orange); color: var(--orange); border-radius: 8px; font-size: 0.85rem; font-weight: 500; font-family: 'Poppins', sans-serif; transition: background 0.2s ease; }
 .about-cta-btn:hover { background: var(--orange-lt); }
+.about-cta-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 
-/* Doctors section */
+/* Doctors section (unused on current landing page markup, kept for reuse) */
 #doctors-section { background: #f9fafb; padding: 80px 48px; border-top: 1px solid var(--border); }
 .landing-doctors-wrap { max-width: 1200px; margin: 0 auto; }
 .landing-doctors-heading { font-size: 1.4rem; font-weight: 700; color: #111827; letter-spacing: -0.02em; text-align: center; margin-bottom: 8px; }
@@ -94,18 +125,37 @@ body { overflow-x: hidden; }
 .ld-role  { font-size: 0.72rem; color: var(--orange); font-weight: 600; margin-bottom: 10px; }
 .ld-sched { display: inline-flex; align-items: center; gap: 5px; font-size: 0.68rem; color: #374151; background: var(--light); border-radius: 999px; padding: 4px 10px; font-weight: 500; border: 1px solid var(--border); white-space: nowrap; }
 
-/* Landing footer */
+/* Landing footer (normal page flow, unlike inner pages' fixed mini footer) */
 #footer { background: #ffffff; padding: 18px 24px; text-align: center; border-top: 1px solid var(--border); }
 .footer-line { font-size: 0.72rem; color: #9ca3af; white-space: nowrap; }
 
+@media (max-width: 991.98px) {
+  .nav-inner { padding: 0 24px; }
+  #about { padding: 64px 32px; min-height: auto; }
+  .about-img-main { height: 280px; }
+}
+
 @media (max-width: 768px) {
-  .hero-heading { font-size: 2.4rem; }
-  .hero-sub { font-size: 0.85rem; }
   .hero-btns { flex-direction: column; align-items: center; }
   .nav-inner { padding: 0 20px; }
-  .about-inner { grid-template-columns: 1fr; gap: 28px; }
-  #about { padding: 48px 24px; min-height: auto; }
+  #about { padding: 48px 24px; }
   .about-img-main { height: 220px; }
   .about-heading { font-size: 1.25rem; }
   .about-stat-num { font-size: 1.1rem; }
+}
+
+@media (max-width: 480px) {
+  .nav-logo-sub { display: none; }
+  .nav-logo img { height: 28px; width: 28px; }
+  .hero-inner { padding: 0 18px; }
+  .hero-sub { margin-bottom: 24px; }
+  .btn-solid, .btn-outline { width: 100%; justify-content: center; }
+  #about { padding: 40px 18px; }
+  /* Three stats no longer fit two-per-row without leaving an orphaned,
+     half-empty third row — stack them full-width instead. */
+  .about-stats { flex-direction: column; gap: 14px; }
+  .about-stat,
+  .about-stat:last-child,
+  .about-stat:not(:first-child):not(:last-child) { flex: none; width: 100%; padding-left: 0 !important; padding-right: 0 !important; border-right: none !important; }
+  .about-cta-btn { width: 100%; justify-content: center; }
 }

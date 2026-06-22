@@ -1,0 +1,9 @@
+# Local dev environment — always serve fresh HTML/CSS/JS so browser
+# caching never masks code changes during active development.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js|css)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+</IfModule>

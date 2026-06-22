@@ -4,50 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us — OPTICANA | Cana Optical Clinic</title>
-  <link rel="icon" type="image/png" href="../brand_assests/cana logo.png">
+  <link rel="icon" type="image/png" href="../brand_assests/cana logo.png" id="site-favicon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5.3 — loaded first so our CSS rules take precedence -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/public.css">
   <link rel="stylesheet" href="../assets/css/navbar.css">
   <link rel="stylesheet" href="../assets/css/contact.css">
 </head>
 <body>
 
-<nav id="navbar">
+<nav class="navbar navbar-expand-lg" id="navbar">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <img src="../brand_assests/cana logo.png" alt="OPTICANA">
+    <a href="../index.html" class="navbar-brand nav-logo">
+      <img src="../brand_assests/cana logo.png" alt="OPTICANA" id="site-logo-img">
       <div>
         <div class="nav-logo-name">OPTICANA</div>
         <div class="nav-logo-sub">Cana Optical Clinic</div>
       </div>
     </a>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="doctors.html">Doctors</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
-    </ul>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav nav-links">
+        <li class="nav-item"><a href="../index.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+        <li class="nav-item"><a href="doctors.html" class="nav-link">Doctors</a></li>
+        <li class="nav-item"><a href="contact.html" class="nav-link active">Contact</a></li>
+        <li class="nav-item nav-link-login"><a href="../app.html" class="nav-link">Login</a></li>
+      </ul>
+    </div>
     <div class="nav-actions">
       <a href="../app.html" class="nav-login">Login</a>
       <a href="../app.html" class="nav-book">Book Now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <button class="navbar-toggler nav-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
 
 <section id="content">
-  <div class="contact-wrap">
+  <div class="contact-wrap row">
 
     <!-- Info card -->
-    <div class="contact-info-card fade-in">
+    <div class="col-12 col-lg-5 contact-col">
+      <div class="contact-info-card fade-in">
       <div class="card-title">Clinic Information</div>
 
       <div class="info-item">
         <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         <div>
           <div class="info-label">Address</div>
-          <div class="info-val">Unit 3 Paseo de Carmona, Brgy. Maduya, Carmona, Cavite</div>
+          <div class="info-val" id="ci-pub-address">Unit 3 Paseo de Carmona, Brgy. Maduya, Carmona, Cavite</div>
         </div>
       </div>
 
@@ -55,7 +64,7 @@
         <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6.29 6.29l.94-.94a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
         <div>
           <div class="info-label">Phone</div>
-          <div class="info-val"><a href="tel:09296636080">0929 663 6080</a></div>
+          <div class="info-val"><a href="tel:09296636080" id="ci-pub-phone">0929 663 6080</a></div>
         </div>
       </div>
 
@@ -63,7 +72,7 @@
         <div class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
         <div>
           <div class="info-label">Email</div>
-          <div class="info-val"><a href="mailto:canaopticalclinic@gmail.com">canaopticalclinic@gmail.com</a></div>
+          <div class="info-val"><a href="mailto:canaopticalclinic@gmail.com" id="ci-pub-email">canaopticalclinic@gmail.com</a></div>
         </div>
       </div>
 
@@ -71,7 +80,7 @@
         <div class="info-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <div>
           <div class="info-label">Hours</div>
-          <div class="info-val">Mon – Sat: 9:00 AM – 5:00 PM &nbsp;·&nbsp; Sun: Closed</div>
+          <div class="info-val" id="ci-pub-hours">Mon – Sat: 9:00 AM – 5:00 PM &nbsp;·&nbsp; Sun: Closed</div>
         </div>
       </div>
 
@@ -82,23 +91,26 @@
           title="Cana Optical Clinic Location">
         </iframe>
       </div>
+      </div>
     </div>
 
     <!-- Form card -->
-    <div class="contact-form-card fade-in">
+    <div class="col-12 col-lg-7 contact-col">
+      <div class="contact-form-card fade-in">
       <div class="card-title">Send Us a Message</div>
 
+      <form id="contact-form" novalidate>
       <div class="form-group">
         <label>Full Name</label>
-        <input type="text" placeholder="Juan Dela Cruz">
+        <input type="text" id="cf-name" placeholder="Juan Dela Cruz">
       </div>
       <div class="form-group">
         <label>Email Address</label>
-        <input type="email" placeholder="juan@example.com">
+        <input type="email" id="cf-email" placeholder="juan@example.com">
       </div>
       <div class="form-group">
         <label>Service Needed</label>
-        <select>
+        <select id="cf-service">
           <option value="">Select a service...</option>
           <option>Eye Examination</option>
           <option>Vision Screening</option>
@@ -110,22 +122,12 @@
       </div>
       <div class="form-group">
         <label>Message</label>
-        <textarea placeholder="Tell us how we can help you..."></textarea>
+        <textarea id="cf-message" placeholder="Tell us how we can help you..."></textarea>
       </div>
-      <button class="btn-submit" onclick="
-        this.disabled=true;
-        this.innerHTML='<span style=\'display:flex;align-items:center;justify-content:center;gap:8px\'><svg width=\'15\' height=\'15\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2.5\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><polyline points=\'12 6 12 12 16 14\'/></svg>Sending…</span>';
-        setTimeout(() => {
-          this.disabled=false;
-          this.textContent='Send Message';
-          const t=document.createElement('div');
-          t.textContent='Message sent! We\'ll get back to you shortly.';
-          t.style.cssText='position:fixed;bottom:60px;right:24px;background:#111827;color:#fff;padding:12px 18px;border-radius:9px;font-size:0.83rem;font-family:Poppins,sans-serif;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.18);opacity:0;transform:translateY(6px);transition:opacity 0.3s,transform 0.3s';
-          document.body.appendChild(t);
-          requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateY(0)'; });
-          setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(6px)'; setTimeout(()=>t.remove(),300); },4000);
-        },1200)
-      ">Send Message</button>
+      <div id="cf-error" class="cf-error" style="display:none"></div>
+      <button type="submit" class="btn-submit" id="cf-submit">Send Message</button>
+      </form>
+      </div>
     </div>
 
   </div>
@@ -135,6 +137,8 @@
   <div class="footer-line">&copy; 2026, CANA OPTICAL CLINIC</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/public-nav.js"></script>
 <script>
   document.querySelectorAll('.nav-links a, .nav-login, .nav-book').forEach(link => {
     link.addEventListener('click', function(e) {
@@ -148,6 +152,65 @@
   });
   document.querySelectorAll('.fade-in').forEach((el, i) => {
     setTimeout(() => el.classList.add('visible'), 150 + i * 120);
+  });
+
+  // ── Contact form submission ──────────────────────────────────
+  function showToast(text, isError) {
+    const t = document.createElement('div');
+    t.textContent = text;
+    t.style.cssText = `position:fixed;bottom:60px;right:24px;background:${isError ? '#DC2626' : '#111827'};color:#fff;padding:12px 18px;border-radius:9px;font-size:0.83rem;font-family:Poppins,sans-serif;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.18);opacity:0;transform:translateY(6px);transition:opacity 0.3s,transform 0.3s;max-width:320px`;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
+    setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(6px)'; setTimeout(() => t.remove(), 300); }, 4000);
+  }
+
+  document.getElementById('contact-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const btn      = document.getElementById('cf-submit');
+    const errorBox = document.getElementById('cf-error');
+    const name     = document.getElementById('cf-name').value.trim();
+    const email    = document.getElementById('cf-email').value.trim();
+    const service  = document.getElementById('cf-service').value;
+    const message  = document.getElementById('cf-message').value.trim();
+
+    errorBox.style.display = 'none';
+
+    if (!name || !email || !message) {
+      errorBox.textContent = 'Please fill in your name, email, and message.';
+      errorBox.style.display = 'block';
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorBox.textContent = 'Please enter a valid email address.';
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:flex;align-items:center;justify-content:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sending…</span>';
+
+    fetch('../api/contact/create.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, service, message })
+    })
+      .then(r => r.json())
+      .then(data => {
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+        if (data.success) {
+          document.getElementById('contact-form').reset();
+          showToast("Message sent! We'll get back to you shortly.");
+        } else {
+          showToast(data.message || 'Something went wrong. Please try again.', true);
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+        showToast('Network error. Please check your connection and try again.', true);
+      });
   });
 </script>
 

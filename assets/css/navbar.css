@@ -1,33 +1,125 @@
-/* ── White navbar + mini footer for inner pages (services / doctors / contact) ── */
-html, body { height: 100%; color: var(--text); background: var(--white); overflow: hidden; }
+/* ── Shared navbar used by every public page (landing + inner pages) ── */
+/* Built on Bootstrap's navbar/collapse components; visuals fully overridden here.
+   Page-specific chrome (fixed no-scroll body, mini fixed footer) lives in each
+   page's own stylesheet, NOT here — this file must stay safe to load on the
+   landing page too. */
 
+#navbar.navbar { padding: 0; }
 #navbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: 70px;
-  display: flex; align-items: center;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000; min-height: 70px;
   background: rgba(255,255,255,0.96);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(229,231,235,0.7);
   box-shadow: 0 1px 12px rgba(0,0,0,0.06);
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
-.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; width: 100%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.nav-logo.navbar-brand { margin-right: 0; padding: 0; font-size: 1rem; }
 .nav-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .nav-logo img { height: 34px; width: 34px; object-fit: contain; }
-.nav-logo-name { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.01em; }
-.nav-logo-sub  { font-size: 0.58rem; font-weight: 500; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px; }
+.nav-logo-name { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.01em; transition: color 0.3s ease; }
+.nav-logo-sub  { font-size: 0.58rem; font-weight: 500; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px; transition: color 0.3s ease; }
 
-.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
-.nav-links a { position: relative; padding: 6px 12px; font-size: 0.85rem; font-weight: 500; color: var(--muted); transition: color 0.25s ease; white-space: nowrap; }
-.nav-links a::after { content: ''; position: absolute; bottom: 2px; left: 12px; width: 0; height: 2px; background: var(--orange); border-radius: 2px; transition: width 0.3s cubic-bezier(0.4,0,0.2,1); }
-.nav-links a:hover { color: var(--orange); }
-.nav-links a:hover::after { width: calc(100% - 24px); }
-.nav-links a.active { color: var(--orange); font-weight: 600; }
+.navbar-nav.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+.nav-links .nav-link { position: relative; padding: 6px 12px; font-size: 0.85rem; font-weight: 500; color: var(--muted); transition: color 0.25s ease; white-space: nowrap; }
+.nav-links .nav-link::after { content: ''; position: absolute; bottom: 2px; left: 12px; width: 0; height: 2px; background: var(--orange); border-radius: 2px; transition: width 0.3s cubic-bezier(0.4,0,0.2,1); }
+.nav-links .nav-link:hover { color: var(--orange); }
+.nav-links .nav-link:hover::after { width: calc(100% - 24px); }
+.nav-links .nav-link.active { color: var(--orange); font-weight: 600; }
+.nav-links .nav-link:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
 
-.nav-actions { display: flex; align-items: center; gap: 10px; }
-.nav-login { font-size: 0.85rem; font-weight: 500; color: var(--muted); padding: 6px 12px; transition: color 0.2s; }
+.nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.nav-login { font-size: 0.85rem; font-weight: 500; color: var(--muted); padding: 6px 12px; transition: color 0.2s ease; }
 .nav-login:hover { color: var(--orange); }
-.nav-book { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; background: var(--orange); color: #fff; font-size: 0.85rem; font-weight: 600; border-radius: 999px; transition: background 0.25s, transform 0.25s; box-shadow: 0 2px 10px rgba(232,137,28,0.3); }
+.nav-login:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
+.nav-book { display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; background: var(--orange); color: #fff; font-size: 0.85rem; font-weight: 600; border-radius: 999px; transition: background 0.25s ease, transform 0.25s ease; box-shadow: 0 2px 10px rgba(232,137,28,0.3); }
 .nav-book:hover { background: var(--orange-dk); transform: translateY(-1px); }
+.nav-book:active { transform: translateY(0); }
+.nav-book:focus-visible { outline: 2px solid var(--orange-dk); outline-offset: 2px; }
+.nav-link-login { display: none; }
+.nav-link-logout { display: none; }
+.nav-link-account { display: none; }
+.nav-link-dashboard { display: none; }
 
-/* Mini footer */
-#footer { position: fixed; bottom: 0; left: 0; right: 0; height: 45px; background: rgba(255,255,255,0.96); display: flex; align-items: center; justify-content: center; border-top: 1px solid rgba(229,231,235,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.footer-line { font-size: 0.72rem; color: #b0b7c3; white-space: nowrap; }
+/* Logged-in profile dropdown (replaces the desktop "Login" link via
+   public-nav.js when a session is active) */
+.nav-profile { position: relative; }
+.nav-profile-btn { display: flex; align-items: center; gap: 8px; background: transparent; border: none; cursor: pointer; padding: 4px 10px 4px 4px; border-radius: 999px; transition: background 0.2s ease; }
+.nav-profile-btn:hover { background: rgba(127,127,127,0.1); }
+.nav-profile-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.nav-profile-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--orange); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; overflow: hidden; flex-shrink: 0; }
+.nav-profile-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nav-profile-name { font-size: 0.85rem; font-weight: 600; color: var(--muted); white-space: nowrap; max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.nav-profile-chevron { flex-shrink: 0; color: var(--muted); transition: transform 0.2s ease; }
+.nav-profile-btn[aria-expanded="true"] .nav-profile-chevron { transform: rotate(180deg); }
+
+.nav-profile-dropdown { position: absolute; top: calc(100% + 10px); right: 0; min-width: 220px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.14); padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s; z-index: 1100; }
+.nav-profile-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.nav-profile-dropdown-head { padding: 8px 10px 10px; }
+.nav-profile-dropdown-name { font-size: 0.85rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-profile-dropdown-email { font-size: 0.74rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-profile-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.nav-profile-dropdown-item { display: block; width: 100%; text-align: left; padding: 9px 10px; border-radius: 8px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 0.84rem; font-weight: 500; color: var(--text); cursor: pointer; transition: background 0.15s ease, color 0.15s ease; text-decoration: none; }
+.nav-profile-dropdown-item:hover { background: var(--orange-lt); color: var(--orange-dk); }
+.nav-profile-logout { color: #DC2626; }
+.nav-profile-logout:hover { background: #FEF2F2; color: #DC2626; }
+
+/* Hamburger toggle (mobile) — a circular tap target that visibly responds
+   to hover/press and shows a distinct "open" state, instead of three bare
+   lines floating with no affordance. */
+.nav-toggle.navbar-toggler { display: none; flex-direction: column; justify-content: center; align-items: center; gap: 5px; width: 40px; height: 40px; background: transparent; border: none; border-radius: 50%; padding: 0; cursor: pointer; flex-shrink: 0; transition: background 0.2s ease; }
+.nav-toggle:hover { background: rgba(127,127,127,0.14); }
+.nav-toggle:active { background: rgba(127,127,127,0.22); }
+.nav-toggle[aria-expanded="true"] { background: rgba(127,127,127,0.18); }
+.nav-toggle:focus { box-shadow: none; }
+.nav-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.nav-toggle span { display: block; width: 20px; height: 2px; border-radius: 2px; background: var(--text); transition: transform 0.25s ease, opacity 0.25s ease; }
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Desktop: a 3-column grid (1fr / auto / 1fr) instead of flex+space-between.
+   The two equal 1fr side columns keep the middle nav-links column
+   mathematically centered on the bar regardless of how wide the logo or
+   nav-actions are — important because the logged-in profile widget
+   (avatar + name + chevron) is noticeably wider than the plain "Login"
+   text it replaces, which threw off the old "center the leftover flex
+   space" approach and made the links look off-center while logged in. */
+@media (min-width: 992px) {
+  .nav-inner { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .nav-logo { grid-column: 1; justify-self: start; }
+  .navbar-collapse { grid-column: 2; justify-self: center; justify-content: center; }
+  .nav-actions { grid-column: 3; justify-self: end; }
+}
+
+@media (max-width: 991.98px) {
+  .nav-toggle.navbar-toggler { display: flex; }
+  .navbar-collapse { flex-basis: 100%; width: 100%; order: 3; }
+  /* .navbar-nav.nav-links (2 classes) elsewhere sets align-items:center —
+     more specific than a plain .nav-links rule, so it would silently win
+     over align-items:stretch here regardless of media-query order. Match
+     the same compound selector so this override actually applies, or every
+     item collapses to a short, centered, content-width box instead of a
+     full-width left-aligned row (which is what made the menu look broken/
+     "compressed" rather than a normal mobile dropdown). */
+  .navbar-nav.nav-links { flex-direction: column; align-items: stretch; width: 100%; gap: 2px; padding-top: 10px; }
+  .nav-links .nav-link { display: block; width: 100%; text-align: left; padding: 13px 14px; border-radius: 10px; border-bottom: none; transition: color 0.2s ease, background 0.2s ease; }
+  .nav-links .nav-link::after { display: none; }
+  .nav-links .nav-link:hover { background: rgba(127,127,127,0.1); }
+  .nav-links .nav-link.active { background: rgba(232,137,28,0.12); }
+  .nav-links .nav-link { display: flex; align-items: center; gap: 10px; }
+  .nav-link-login { display: list-item; }
+  .nav-link-login .nav-link { border-top: 1px solid var(--border); border-radius: 0; margin-top: 6px; padding-top: 16px; }
+  .nav-link-account { display: list-item; border-top: 1px solid var(--border); margin-top: 6px; padding-top: 16px; }
+  .nav-mobile-account { display: flex; align-items: center; gap: 10px; padding: 4px 14px 10px; }
+  .nav-mobile-account-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+  .nav-link-dashboard { display: list-item; }
+  .nav-link-logout { display: list-item; }
+  .nav-link-logout .nav-link { color: #DC2626; }
+  .nav-link-logout .nav-link:hover { background: #FEF2F2; }
+  .nav-actions .nav-login { display: none; }
+  /* The desktop profile button never appears collapsed — its content
+     already lives in the mobile menu via the items above. */
+  .nav-actions .nav-profile { display: none; }
+}
+

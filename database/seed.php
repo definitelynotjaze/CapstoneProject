@@ -242,6 +242,22 @@ foreach ($svcRows as [$name,$desc,$dur,$icon]) {
 }
 log_msg('Clinic services seeded.');
 
+// ── Clinic Settings (single row) ────────────────────────────────────
+$pdo->prepare(
+    'INSERT IGNORE INTO clinic_settings (id, name, tagline, address, phone, email, hours, tin_no, phic_no)
+     VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)'
+)->execute([
+    'Cana Optical Clinic',
+    'Clear Vision. Compassionate Care.',
+    'Unit 3 Paseo de Carmona, Brgy. Maduya, Carmona, Cavite',
+    '0929 663 6080',
+    'canaopticalclinic@gmail.com',
+    'Monday – Saturday: 9:00 AM – 5:00 PM',
+    '123-456-789-000',
+    '01-123456789-0',
+]);
+log_msg('Clinic settings seeded.');
+
 // ── Archived Records ──────────────────────────────────────────────
 $arcRows = [
     ['AR001','Patient',    'Elena Villanueva',       'P008', 'Roberto Cruz','Duplicate patient record',          'Apr 14, 2026'],

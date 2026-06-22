@@ -4,34 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Services — OPTICANA | Cana Optical Clinic</title>
-  <link rel="icon" type="image/png" href="../brand_assests/cana logo.png">
+  <link rel="icon" type="image/png" href="../brand_assests/cana logo.png" id="site-favicon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5.3 — loaded first so our CSS rules take precedence -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/public.css">
   <link rel="stylesheet" href="../assets/css/navbar.css">
   <link rel="stylesheet" href="../assets/css/services.css">
 </head>
 <body>
 
-<nav id="navbar">
+<nav class="navbar navbar-expand-lg" id="navbar">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <img src="../brand_assests/cana logo.png" alt="OPTICANA">
+    <a href="../index.html" class="navbar-brand nav-logo">
+      <img src="../brand_assests/cana logo.png" alt="OPTICANA" id="site-logo-img">
       <div>
         <div class="nav-logo-name">OPTICANA</div>
         <div class="nav-logo-sub">Cana Optical Clinic</div>
       </div>
     </a>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="services.html" class="active">Services</a></li>
-      <li><a href="doctors.html">Doctors</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav nav-links">
+        <li class="nav-item"><a href="../index.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="services.html" class="nav-link active">Services</a></li>
+        <li class="nav-item"><a href="doctors.html" class="nav-link">Doctors</a></li>
+        <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+        <li class="nav-item nav-link-login"><a href="../app.html" class="nav-link">Login</a></li>
+      </ul>
+    </div>
     <div class="nav-actions">
       <a href="../app.html" class="nav-login">Login</a>
       <a href="../app.html" class="nav-book">Book Now <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <button class="navbar-toggler nav-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
@@ -44,70 +52,86 @@
       <h1 class="section-title">What We Offer</h1>
     </div>
 
-    <div class="services-grid">
+    <div class="services-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
         <div class="service-title">Eye Examination</div>
         <div class="service-desc">A comprehensive assessment of the patient's eye condition to evaluate vision and overall eye health.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="service-title">Vision Screening</div>
         <div class="service-desc">A basic check to determine if a patient has possible vision problems that may require further examination.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
         <div class="service-title">Refraction</div>
         <div class="service-desc">A procedure used to determine the correct lens power needed to improve the patient's vision.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div class="service-title">Diagnosis of Refractive Errors</div>
         <div class="service-desc">Identification of vision conditions such as nearsightedness, farsightedness, and astigmatism.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
         <div class="service-title">Prescription of Corrective Lenses</div>
         <div class="service-desc">Issuance of eyeglass or contact lens prescriptions based on the patient's vision needs.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
         </div>
         <div class="service-title">Lens Fitting</div>
         <div class="service-desc">Adjustment and fitting of lenses to ensure proper alignment, comfort, and visual clarity.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         </div>
         <div class="service-title">Optical Frame Selection</div>
         <div class="service-desc">Assisting patients in choosing frames that fit properly and suit their preferences.</div>
+        </div>
       </div>
 
-      <div class="service-card fade-in">
+      <div class="col">
+        <div class="service-card fade-in">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
         </div>
         <div class="service-title">Follow-up Consultation</div>
         <div class="service-desc">Subsequent visits to review the patient's vision condition and assess any changes after treatment.</div>
+        </div>
       </div>
 
     </div>
@@ -126,6 +150,8 @@
   <div class="footer-line">&copy; 2026, CANA OPTICAL CLINIC</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/public-nav.js"></script>
 <script>
   document.querySelectorAll('.nav-links a, .nav-login, .nav-book').forEach(link => {
     link.addEventListener('click', function(e) {
